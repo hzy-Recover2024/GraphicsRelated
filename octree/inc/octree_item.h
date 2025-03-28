@@ -6,7 +6,7 @@
 
 #include "b_box.h"
 namespace GRelated {
-    namespace OCt {
+    namespace OCtree {
         class OctreeNode;
         class OctreeItem {
         public:

@@ -7,17 +7,19 @@
 #include <memory>
 #include <vector>
 #include "b_box.h"
+#include "octree_node_allocator.h"
+
 namespace GRelated {
-    namespace OCt {
+    namespace OCtree {
         class OctreeItem;
         class Octree;
         constexpr auto LOOSE_FACTOR = 1.2F;
         using ItemRef = std::shared_ptr<OctreeItem>;
         using QueryFunc = std::function<bool(const Bounding_box&)>;
-        // TODO定义一个自带删除器的unique_ptr<Ocnode>
+
         class OctreeNode {
         public:
-            OctreeNode(const Bounding_box&, OctreeNode*, Octree*);
+            OctreeNode(const Bounding_box& bbox, OctreeNode* parent, Octree* owner);
             ~OctreeNode();
 
             // 插入节点，若插入失败返回false
@@ -36,10 +38,17 @@ namespace GRelated {
             void query(QueryFunc func, std::vector<ItemRef>& res);
         private:
             Bounding_box m_bbox;
-            std::array<OctreeNode*, 8> m_children; //TODO 八个孩子存储的是自带删除器的unique_ptr
+            std::array<OctreeNodePtr, 8> m_children;
             OctreeNode* m_parent = nullptr;
             Octree* m_owner = nullptr;
             std::vector<std::weak_ptr<OctreeItem>> m_items;
+        };
+
+        class OctreeNodeFactory {
+        public:
+            virtual OctreeNodePtr create(const Bounding_box& bbox,
+                OctreeNode* parent, Octree* owner) const;
+            virtual ~OctreeNodeFactory() = default;
         };
     }
 }

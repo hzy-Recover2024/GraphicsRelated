@@ -4,9 +4,10 @@
 #include "GR_math.h"
 #include "octree_item.h"
 #include "octree_node.h"
+#include "octree_node_allocator.h"
 #include <deque>
 namespace GRelated {
-    namespace OCt {
+    namespace OCtree {
         //¶¯Ì¬ËÉÉ¢°Ë²æÊ÷
         class DLooseOctree {
         public:

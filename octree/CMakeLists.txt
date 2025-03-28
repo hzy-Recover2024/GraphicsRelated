@@ -4,14 +4,16 @@ set(HEADERS
     inc/b_box.h 
     inc/octree.h 
     inc/octree_node.h
-    inc/octree_item.h)
+    inc/octree_item.h
+    inc/octree_node_allocator.h)
 
 ##记录源文件
 set(SRCS 
     src/b_box.cpp 
     src/octree.cpp 
     src/octree_node.cpp
-    src/octree_item.cpp)
+    src/octree_item.cpp
+    src/octree_node_allocator.cpp)
 
 ##构建虚拟文件夹
 source_group("inc" FILES ${HEADERS})
@@ -23,7 +25,7 @@ add_library(${PROJECT_NAME} STATIC ${SRCS} ${HEADERS})
 ##头文件可见
 target_include_directories(${PROJECT_NAME} PUBLIC inc/)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC grmath)
+target_link_libraries(${PROJECT_NAME} PUBLIC grmath performanceTool)
 
 ##编译标志
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
