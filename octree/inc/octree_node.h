@@ -66,6 +66,26 @@ namespace GRelated {
                     m_bbox.z_min + z_half + z_half * LOOSE_FACTOR);
             }
 
+            void setBoundingBox(const Bounding_box& bbox)
+            {
+                m_bbox = bbox;
+            }
+
+            void setParent(OctreeNode* pNode)
+            {
+                m_parent = pNode;
+            }
+
+            OctreeNode* getChild(GRUINT index)
+            {
+                return m_children[index].get();
+            }
+
+            std::array<OctreeNodePtr, 8>& getChildren()
+            {
+                return m_children;
+            }
+
         private:
             enum NodeState : char
             {
