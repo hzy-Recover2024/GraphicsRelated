@@ -5,7 +5,7 @@
 #include "GR_math.h"
 namespace GRelated {
     // aabb°üÎ§ºÐ
-    struct alignas(4) Bounding_box
+    struct alignas(alignof(GRfloat)) Bounding_box
     {
         GRfloat x_min;
         GRfloat y_min;
@@ -33,6 +33,32 @@ namespace GRelated {
         bool valid() const;
         // À©Õ¹
         void expand(GRfloat x, GRfloat y, GRfloat z);
+
+        const GRfloat* max_pt() const
+        {
+            return &x_max;
+        }
+
+        const GRfloat* min_pt() const
+        {
+            return &x_min;
+        }
+    };
+
+    struct alignas(alignof(GRfloat)) Ray
+    {
+        GRfloat pos[3];
+        GRfloat dir[3];
+
+        Ray(GRfloat x, GRfloat y, GRfloat z, GRfloat dir_x, GRfloat dir_y, GRfloat dir_z)
+        {
+            pos[0] = x;
+            pos[1] = y;
+            pos[2] = z;
+            dir[0] = dir_x;
+            dir[1] = dir_y;
+            dir[2] = dir_z;
+        }
     };
 }
 #endif // !_B_BOX_H

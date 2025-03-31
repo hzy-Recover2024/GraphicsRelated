@@ -15,6 +15,12 @@ namespace GRelated {
             DLooseOctree(GRUINT, GRUINT);
             ~DLooseOctree();
 
+            // 查询与指定包围盒相交或位于指定包围盒内的元素
+            void queryRange(const Bounding_box& target, OctreeNode::ItemResult& res) const;
+
+            // 查询与射线相交的节点元素
+            void rayIntersect(const Ray& ray, OctreeNode::ItemResult& res) const;
+
             void update();
 
             void cacheSubdivide(OctreeNode*);
@@ -53,8 +59,9 @@ namespace GRelated {
             void _dealNodes();
 
         private:
-            GRUINT m_maxDepth;
-            GRUINT m_threshold;
+            GRUINT m_maxDepth = 10;
+            GRUINT m_threshold = 1024;
+            GRUINT m_updateTimes = 0;
             std::unique_ptr<OctreeNodeFactory> m_nodeCreator;
             OctreeNodePtr m_root;
             // 待插入列表

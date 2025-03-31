@@ -39,8 +39,9 @@ namespace GRelated {
 
             bool checkMerge() const;
 
+            using ItemResult = std::vector<ItemPtr>;
             //核心功能：利用空间关系加速的查询
-            void query(QueryFunc func, std::vector<ItemPtr>& res) const;
+            void query(QueryFunc func, ItemResult& res) const;
 
             bool isLeaf() const
             {
