@@ -5,11 +5,11 @@ namespace GRelated {
     {
         // 检查在三个轴上的投影线段是否全都有交集
         bool xCheck = (GRfloat_equal(x_max, other.x_min) || x_max > other.x_min) &&
-            (GRfloat_equal(x_min, other.x_max) || other.x_max > x_max);
+            (GRfloat_equal(x_min, other.x_max) || other.x_max > x_min);
         bool yCheck = (GRfloat_equal(y_max, other.y_min) || y_max > other.y_min) &&
-            (GRfloat_equal(y_min, other.y_max) || other.y_max > y_max);
+            (GRfloat_equal(y_min, other.y_max) || other.y_max > y_min);
         bool zCheck = (GRfloat_equal(z_max, other.z_min) || z_max > other.z_min) &&
-            (GRfloat_equal(z_min, other.z_max) || other.z_max > z_max);
+            (GRfloat_equal(z_min, other.z_max) || other.z_max > z_min);
         return xCheck && yCheck && zCheck;
     }
 
@@ -57,7 +57,7 @@ namespace GRelated {
         bool minCheck = (GRfloat_equal(other.x_min, x_min) || other.x_min > x_min) &&
             (GRfloat_equal(other.y_min, y_min) || other.y_min > y_min) &&
             (GRfloat_equal(other.z_min, z_min) || other.z_min > z_min);
-        bool maxCheck = (GRfloat_equal(other.x_max, x_max) || other.x_max < x_min) &&
+        bool maxCheck = (GRfloat_equal(other.x_max, x_max) || other.x_max < x_max) &&
             (GRfloat_equal(other.y_max, y_max) || other.y_max < y_max) &&
             (GRfloat_equal(other.z_max, z_max) || other.z_max < z_max);
         return minCheck && maxCheck;

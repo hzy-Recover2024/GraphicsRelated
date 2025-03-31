@@ -81,7 +81,7 @@ namespace GRelated {
         void OctreeNode::subdivide()
         {
             m_state.reset(kToSubdivied);
-            if (isLeaf())
+            if (!isLeaf())
             {
                 return;
             }
@@ -157,7 +157,7 @@ namespace GRelated {
         {
             GRUINT depth = 0;
             auto parent = m_parent;
-            while (m_parent != nullptr)
+            while (parent != nullptr)
             {
                 parent = parent->m_parent;
                 depth++;
@@ -216,10 +216,14 @@ namespace GRelated {
                 {
                     res.push_back(item.lock());
                 }
-                for (const auto& child : m_children)
+                if (!isLeaf())
                 {
-                    query(func, res);
+                    for (const auto& child : m_children)
+                    {
+                        child->query(func, res);
+                    }
                 }
+
             }
             return;
         }

@@ -37,13 +37,13 @@ namespace GRelated {
                     GRfloat t_max = GRfloat_max;   // 初始化退出时间为正无穷
 
                     for (int axis = 0; axis < 3; axis++) {  // 分别处理x、y、z轴
-                        float inv_d = 1.0f / ray.dir[axis];  // 方向分量的倒数
-                        if (GRfloat_equal(inv_d, 0.0f)) { // 方向分量为0（需处理浮点误差）
+                        if (GRfloat_equal(ray.dir[axis], 0.0f)) { // 方向分量为0（需处理浮点误差）
                             if (ray.pos[axis] < box.min_pt()[axis] || ray.pos[axis] > box.max_pt()[axis]) {
                                 return false; // 不相交
                             }
                             continue; // 跳过当前轴的计算
                         }
+                        float inv_d = 1.0f / ray.dir[axis];  // 方向分量的倒数
                         float t0 = (box.min_pt()[axis] - ray.pos[axis]) * inv_d;  // 进入时间
                         float t1 = (box.max_pt()[axis] - ray.pos[axis]) * inv_d;  // 退出时间
 
@@ -197,7 +197,7 @@ namespace GRelated {
             // 确定扩大一倍包围盒时的方向
             unsigned char dir(0);
             unsigned char index(0);
-            if (itemBbox.x_min > curRootBbox.x_min || itemBbox.x_max > itemBbox.x_max)
+            if (itemBbox.x_min > curRootBbox.x_min || itemBbox.x_max > curRootBbox.x_max)
             {
                 dir |= 0x1;
                 index &= ~0x1;
@@ -208,7 +208,7 @@ namespace GRelated {
                 index |= 0x1;
             }
 
-            if (itemBbox.y_min > curRootBbox.y_min || itemBbox.y_max > itemBbox.y_max)
+            if (itemBbox.y_min > curRootBbox.y_min || itemBbox.y_max > curRootBbox.y_max)
             {
                 dir |= 0x2;
                 index &= ~0x2;
@@ -219,7 +219,7 @@ namespace GRelated {
                 index |= 0x2;
             }
 
-            if (itemBbox.z_min > curRootBbox.z_min || itemBbox.z_max > itemBbox.z_max)
+            if (itemBbox.z_min > curRootBbox.z_min || itemBbox.z_max > curRootBbox.z_max)
             {
                 dir |= 0x4;
                 index &= ~0x4;
