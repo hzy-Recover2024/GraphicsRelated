@@ -4,6 +4,7 @@
 #define _GRGL_CONTEXT_H
 #include <string>
 #include "grgl_type.h"
+#include "grgl_object.h"
 namespace GRelated {
     class GRGLContext {
     public:
@@ -43,14 +44,15 @@ namespace GRelated {
             return m_glslVersion;
         }
 
-        void grglFinish();
-        void grglFlush();
+        
+        virtual void detachObject(GRGL_enum target, GRGLGenericObject* pObj) = 0;
+        virtual void attachObject(GRGL_enum target, GRGLGenericObject* pObj) = 0;
 
-        void grglEnable(GRGL_enum cap);
-        void grglDisable(GRGL_enum cap);
+        virtual void grglFinish() = 0;
+        virtual void grglFlush() = 0;
 
-    protected:
-        void _init();
+        virtual void grglEnable(GRGL_enum cap) = 0;
+        virtual void grglDisable(GRGL_enum cap) = 0;
 
     protected:
         // context的一些信息
@@ -70,6 +72,7 @@ namespace GRelated {
             GRGL_uint width, GRGL_uint height);
         ~GLFWGLContext();
 
+        // 窗口相关的函数
         void makeCurrent() override;
         bool shouldClose();
         void swapBuffers();
@@ -82,6 +85,15 @@ namespace GRelated {
         {
             return m_fbHeight;
         }
+
+        // opengl 相关函数
+        void grglFinish() override;
+        void grglFlush() override;
+
+        void grglEnable(GRGL_enum cap) override;
+        void grglDisable(GRGL_enum cap) override;
+    private:
+        void _init();
     private:
         void* m_window;
         GRGL_uint m_fbWidth = 0;

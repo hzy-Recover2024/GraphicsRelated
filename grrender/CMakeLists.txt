@@ -3,12 +3,14 @@ project(grrender)
 set(HEADERS 
     inc/grgl_context.h 
     inc/grgl_type.h
+    inc/grgl_object.h
 )
 
 ##记录源文件
 set(SRCS 
     src/entry.cpp
     src/grgl_context.cpp
+    src/grgl_object.cpp
 )
 
 ##构建虚拟文件夹

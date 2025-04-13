@@ -4,33 +4,41 @@
 #include <assert.h>
 namespace GRelated {
 
+    namespace {
+        void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+        {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+    }
+
     GRGLContext::GRGLContext(ContextInfo contextType)
         : m_contextType(contextType)
     {
 
     }
 
-    void GRGLContext::grglFinish()
+    void GLFWGLContext::grglFinish()
     {
         ::glFinish();
     }
 
-    void GRGLContext::grglFlush()
+    void GLFWGLContext::grglFlush()
     {
         ::glFlush();
     }
 
-    void GRGLContext::grglEnable(GRGL_enum cap)
+    void GLFWGLContext::grglEnable(GRGL_enum cap)
     {
         ::glEnable(cap);
     }
 
-    void GRGLContext::grglDisable(GRGL_enum cap)
+    void GLFWGLContext::grglDisable(GRGL_enum cap)
     {
         ::glDisable(cap);
     }
 
-    void GRGLContext::_init()
+    void GLFWGLContext::_init()
     {
         m_glslVersion = reinterpret_cast<const char*>(
             ::glGetString(GL_SHADING_LANGUAGE_VERSION));
@@ -40,13 +48,6 @@ namespace GRelated {
             ::glGetString(GL_VENDOR));
         m_version = reinterpret_cast<const char*>(
             ::glGetString(GL_VERSION));
-    }
-    namespace {
-        void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-        {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-                glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
     }
 
     GLFWGLContext::GLFWGLContext(ContextInfo contextType,
