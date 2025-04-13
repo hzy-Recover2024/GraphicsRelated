@@ -77,7 +77,7 @@ namespace GRelated {
                 m_parent = pNode;
             }
 
-            OctreeNode* getChild(GRUINT index)
+            OctreeNode* getChild(GRUINT32 index)
             {
                 return m_children[index].get();
             }

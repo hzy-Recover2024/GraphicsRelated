@@ -24,7 +24,7 @@ namespace GRelated {
         }
     }
 
-    GRelated::NodeBase* DrawableNode::getParent(GRUINT idx) const
+    GRelated::NodeBase* DrawableNode::getParent(GRUINT32 idx) const
     {
         return m_parentList.at(idx);
     }
@@ -48,7 +48,7 @@ namespace GRelated {
         }
     }
 
-    GRelated::NodePtr DrawableNode::getChild(GRUINT idx) const
+    GRelated::NodePtr DrawableNode::getChild(GRUINT32 idx) const
     {
         return m_childList.at(idx);
     }

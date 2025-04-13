@@ -5,7 +5,7 @@
 namespace GRelated {
     namespace OCtree {
 
-        DLooseOctree::DLooseOctree(GRUINT threshold, GRUINT maxDepth)
+        DLooseOctree::DLooseOctree(GRUINT32 threshold, GRUINT32 maxDepth)
             : m_threshold(threshold), m_maxDepth(maxDepth),
             m_nodeCreator(std::make_unique<OctreeNodeFactory>()),
             m_root(m_nodeCreator->create(Bounding_box(), nullptr, this))

@@ -12,7 +12,7 @@ namespace GRelated {
         //动态松散八叉树
         class DLooseOctree {
         public:
-            DLooseOctree(GRUINT, GRUINT);
+            DLooseOctree(GRUINT32, GRUINT32);
             ~DLooseOctree();
 
             // 查询与指定包围盒相交或位于指定包围盒内的元素
@@ -38,12 +38,12 @@ namespace GRelated {
                 return *m_nodeCreator;
             }
 
-            GRUINT threshold() const
+            GRUINT32 threshold() const
             {
                 return m_threshold;
             }
 
-            GRUINT maxDepth() const
+            GRUINT32 maxDepth() const
             {
                 return m_maxDepth;
             }
@@ -59,9 +59,9 @@ namespace GRelated {
             void _dealNodes();
 
         private:
-            GRUINT m_maxDepth = 10;
-            GRUINT m_threshold = 1024;
-            GRUINT m_updateTimes = 0;
+            GRUINT32 m_maxDepth = 10;
+            GRUINT32 m_threshold = 1024;
+            GRUINT32 m_updateTimes = 0;
             std::unique_ptr<OctreeNodeFactory> m_nodeCreator;
             OctreeNodePtr m_root;
             // 待插入列表

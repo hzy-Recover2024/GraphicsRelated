@@ -86,7 +86,7 @@ namespace GRelated {
                 return;
             }
             // 创建八个子节点
-            for (GRUINT i = 0; i < 8; ++i)
+            for (GRUINT32 i = 0; i < 8; ++i)
             {
                 Bounding_box childBbox;
                 auto x_stride = (m_bbox.x_max - m_bbox.x_min) * 0.5f;
@@ -155,7 +155,7 @@ namespace GRelated {
 
         bool OctreeNode::checkSubdivide() const
         {
-            GRUINT depth = 0;
+            GRUINT32 depth = 0;
             auto parent = m_parent;
             while (parent != nullptr)
             {
@@ -190,7 +190,7 @@ namespace GRelated {
 
         bool OctreeNode::checkMerge() const
         {
-            GRUINT itemsCount = m_items.size();
+            GRUINT32 itemsCount = m_items.size();
             for (const auto& child : m_children)
             {
                 itemsCount += child->m_items.size();

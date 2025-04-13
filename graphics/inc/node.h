@@ -26,10 +26,10 @@ namespace GRelated {
         // 节点的连接
         virtual void addParent(NodeBase*) = 0;
         virtual void removeParent(NodeBase*) = 0;
-        virtual NodeBase* getParent(GRUINT idx) const = 0;
+        virtual NodeBase* getParent(GRUINT32 idx) const = 0;
         virtual void addChild(NodePtr) = 0;
         virtual void removeChild(NodePtr) = 0;
-        virtual NodePtr getChild(GRUINT idx) const = 0;
+        virtual NodePtr getChild(GRUINT32 idx) const = 0;
 
         // 节点访问
         virtual void accept(NodeVisitor&) = 0;

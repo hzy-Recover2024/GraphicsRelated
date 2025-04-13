@@ -3,9 +3,11 @@
 #define _GR_MATH_H
 #include <cmath>
 #include <cstdlib>
+#include <cstdint>
 #include <limits>
 #define GRfloat float
-#define GRUINT unsigned int
+#define GRUINT32 uint32_t
+#define GRINT32 int32_t
 constexpr auto GRfloat_epsilon = std::numeric_limits<GRfloat>::epsilon();
 constexpr auto GRfloat_max = std::numeric_limits<GRfloat>::max();
 constexpr auto GRfloat_min = std::numeric_limits<GRfloat>::lowest();

@@ -24,10 +24,10 @@ namespace GRelated {
         // 节点的连接
         void addParent(NodeBase*) override;
         void removeParent(NodeBase*) override;
-        NodeBase* getParent(GRUINT idx) const override;
+        NodeBase* getParent(GRUINT32 idx) const override;
         void addChild(NodePtr) override;
         void removeChild(NodePtr) override;
-        NodePtr getChild(GRUINT idx) const override;
+        NodePtr getChild(GRUINT32 idx) const override;
 
         // 节点访问
         void accept(NodeVisitor&) override;
@@ -54,12 +54,12 @@ namespace GRelated {
             m_nodeDirty = hint;
         }
 
-        GRUINT observeNum() const
+        GRUINT32 observeNum() const
         {
             return m_observer.size();
         }
 
-        NodeProxyPtr getObserver(GRUINT index) const
+        NodeProxyPtr getObserver(GRUINT32 index) const
         {
             return m_observer[index].lock();
         }

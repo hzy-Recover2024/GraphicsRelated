@@ -35,7 +35,7 @@ namespace GRelated {
             else
             {
                 auto count = node.observeNum();
-                for (GRUINT i = 0; i < count; ++i)
+                for (GRUINT32 i = 0; i < count; ++i)
                 {
                     m_nodeProxyPath.push_back(node.getObserver(i).get());
                     // traverse child

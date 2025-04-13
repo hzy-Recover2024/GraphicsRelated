@@ -15,7 +15,7 @@ namespace GRelated {
         m_parent = nullptr;
     }
 
-    GRelated::NodeBase* TransformNode::getParent(GRUINT) const
+    GRelated::NodeBase* TransformNode::getParent(GRUINT32) const
     {
         return m_parent;
     }
@@ -31,7 +31,7 @@ namespace GRelated {
         m_child.reset();
     }
 
-    GRelated::NodePtr TransformNode::getChild(GRUINT idx) const
+    GRelated::NodePtr TransformNode::getChild(GRUINT32 idx) const
     {
         return m_child;
     }
