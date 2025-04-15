@@ -5,23 +5,58 @@
 
 #include "grgl_type.h"
 #include <bitset>
+#include <memory>
 namespace GRelated {
     class GRGLContext;
-    class GRGLGenericObject {
+    class GRGLObject;
+    using ObjectPtr = std::shared_ptr<GRGLObject>;
+    enum class ObjectType
+    {
+        kBuffer,
+        kTexture,
+        kQuery,
+        kFrameBuffer,
+        kRenderBuffer,
+        kSampler,
+        kVAO,
+        kOther,
+        kProgram = kOther,
+        kShader,
+        kSync
+    };
+
+    enum class ObjectTarget {
+        kVBO,
+        kSSBO,
+        kEBO,
+        kUBO,
+        kATCBO,
+        kDIBO
+    };
+
+    class GRGLObject : public std::enable_shared_from_this<GRGLObject> {
     public:
-        enum ObjectType
+        virtual ~GRGLObject() = default;
+        GRGLObject(const GRGLObject&) = delete;
+        GRGLObject& operator=(const GRGLObject&) = delete;
+
+        void registerContext();
+        void unregisterContext();
+        virtual ObjectType type() const = 0;
+    protected:
+        explicit GRGLObject(GRGLContext& context)
+            : m_context(context)
         {
-            kBuffer,
-            kTexture,
-            kQuery,
-            kFrameBuffer,
-            kRenderBuffer,
-            kSampler,
-            kVAO
-        };
+
+        }
+        GRGLContext& m_context;
+    };
+
+    class GRGLGenericObject : public GRGLObject {
+    public:
 
         explicit GRGLGenericObject(GRGLContext& context)
-            : m_context(context)
+            : GRGLObject(context)
         {
 
         }
@@ -36,13 +71,10 @@ namespace GRelated {
             return m_id;
         }
 
-        virtual ObjectType type() const = 0;
-
         virtual void bind() = 0;
         virtual void unbind() = 0;
 
     protected:
-        GRGLContext& m_context;
         GRGL_uint m_id = 0;
         GRGL_enum m_bound = 0;
     };
@@ -50,29 +82,33 @@ namespace GRelated {
     // immutable版
     // 该类对象默认拥有可写的映射标记
     class GRGLBufferObject : public GRGLGenericObject {
+    protected:
+        GRGLBufferObject(GRGLContext& context, ObjectTarget target, GRGL_sizeiptr size, void* data, bool writeAble);
     public:
-        enum BufferTarget
+        static std::shared_ptr<GRGLBufferObject> create(
+            GRGLContext& context, ObjectTarget target, GRGL_sizeiptr size, void* data, bool writeAble)
         {
-            kVBO,
-            kSSBO,
-            kEBO,
-            kUBO,
-            kATCBO,
-            kDIBO
-        };
+            std::shared_ptr<GRGLBufferObject> newPtr(
+                new GRGLBufferObject(context, target, size, data, writeAble));
+            newPtr->registerContext();
+            return newPtr;
+        }
 
-        GRGLBufferObject(GRGLContext& context, BufferTarget target, GRGL_sizeiptr size, void* data, bool writeAble);
+        GRGLBufferObject(const GRGLBufferObject&) = delete;
+        GRGLBufferObject& operator=(const GRGLBufferObject&) = delete;
         virtual ~GRGLBufferObject();
 
         ObjectType type() const override
         {
-            return kBuffer;
+            return ObjectType::kBuffer;
         }
 
         void bind() override;
         void unbind() override;
 
         void bindIndex(GRGL_uint index);
+
+        void setTarget(ObjectTarget target);
 
         void clear() {} //TODO
 
@@ -99,8 +135,20 @@ namespace GRelated {
     };
 
     class GRGLBufferObjectPersistMapped : public GRGLBufferObject {
+    protected:
+        GRGLBufferObjectPersistMapped(GRGLContext& context, ObjectTarget target, GRGL_sizeiptr size, void* data);
     public:
-        GRGLBufferObjectPersistMapped(GRGLContext& context, BufferTarget target, GRGL_sizeiptr size, void* data);
+        static std::shared_ptr<GRGLBufferObjectPersistMapped> create(
+            GRGLContext& context, ObjectTarget target, GRGL_sizeiptr size, void* data)
+        {
+            std::shared_ptr<GRGLBufferObjectPersistMapped> newPtr(
+                new GRGLBufferObjectPersistMapped(context, target, size, data));
+            newPtr->registerContext();
+            return newPtr;
+        }
+
+        GRGLBufferObjectPersistMapped(const GRGLBufferObjectPersistMapped&) = delete;
+        GRGLBufferObjectPersistMapped& operator=(const GRGLBufferObjectPersistMapped&) = delete;
         ~GRGLBufferObjectPersistMapped();
 
         void issueSync() {} // TODO
@@ -116,6 +164,134 @@ namespace GRelated {
 
     private:
         void* m_data;
+    };
+
+    class GRGLVertexArrayObject : public GRGLGenericObject {
+    protected:
+        explicit GRGLVertexArrayObject(GRGLContext& context);
+    public:
+        static std::shared_ptr<GRGLVertexArrayObject> create(GRGLContext& context)
+        {
+            std::shared_ptr<GRGLVertexArrayObject> newPtr(new GRGLVertexArrayObject(context));
+            newPtr->registerContext();
+            return newPtr;
+        }
+        GRGLVertexArrayObject(const GRGLVertexArrayObject&) = delete;
+        GRGLVertexArrayObject& operator=(const GRGLVertexArrayObject&) = delete;
+        ~GRGLVertexArrayObject();
+
+        ObjectType type() const override
+        {
+            return ObjectType::kVAO;
+        }
+
+        void bind();
+        void unbind();
+
+        // 配置顶点属性的格式为浮点数
+        void vertexAttriPointer(GRGL_uint index,
+            GRGL_int size, TypeEnum type,
+            bool normalized, GRGL_sizei stride, GRGL_sizeiptr offset);
+
+        // 配置顶点属性的格式为整型
+        void vertexAttriIPointer(GRGL_uint index,
+            GRGL_int size, TypeEnum type,
+            GRGL_sizei stride, GRGL_sizeiptr offset);
+
+        void enableVertexAttribArray(GRGL_uint index);
+
+        void disableVertexAttribArray(GRGL_uint index);
+
+    };
+
+    enum QueryType
+    {
+        // 深度测试
+        kSamples_passed,
+        kAny_samples_passed,
+        kTime_elapsed,
+        kPrimitives_generated
+    };
+
+    class GRGLQueryObject : public GRGLObject {
+    protected:
+        GRGLQueryObject(GRGLContext& context, QueryType type);
+    public:
+        static std::shared_ptr<GRGLQueryObject> create(GRGLContext& context, QueryType type)
+        {
+            std::shared_ptr<GRGLQueryObject> newPtr(new GRGLQueryObject(context, type));
+            newPtr->registerContext();
+            return newPtr;
+        }
+        GRGLQueryObject(const GRGLQueryObject&) = delete;
+        GRGLQueryObject& operator=(const GRGLQueryObject&) = delete;
+        ~GRGLQueryObject() override;
+
+        ObjectType type() const override
+        {
+            return ObjectType::kQuery;
+        }
+
+        void begin();
+        void end();
+        bool setTarget(QueryType type);
+        bool isReady() const;
+        GRGL_int64 getResult();
+        GRGL_uint64 getResultui();
+    private:
+        bool m_bQuerying = false;
+        GRGL_uint m_id;
+        GRGL_enum m_bound;
+    };
+
+    class GRGLProgram : public GRGLObject {
+    protected:
+        GRGLProgram(GRGLContext& context);
+    public:
+        static std::shared_ptr<GRGLProgram> create(GRGLContext& context)
+        {
+            std::shared_ptr<GRGLProgram> newPtr(new GRGLProgram(context));
+            newPtr->registerContext();
+            return newPtr;
+        }
+        ObjectType type() const override
+        {
+            return ObjectType::kProgram;
+        }
+        GRGLProgram(const GRGLProgram&) = delete;
+        GRGLProgram& operator=(const GRGLProgram&) = delete;
+        ~GRGLProgram();
+        // TODO
+    };
+
+    class GRGLShader : public GRGLObject {
+    public:
+        // TODO
+    };
+
+    class GRGLSync : public GRGLObject {
+    protected:
+        explicit GRGLSync(GRGLContext& context);
+    public:
+        static std::shared_ptr<GRGLSync> create(GRGLContext& context)
+        {
+            std::shared_ptr<GRGLSync> newPtr(new GRGLSync(context));
+            newPtr->registerContext();
+            return newPtr;
+        }
+
+        ObjectType type() const override
+        {
+            return ObjectType::kSync;
+        }
+
+        GRGLSync(const GRGLSync&) = delete;
+        GRGLSync& operator=(const GRGLSync&) = delete;
+        ~GRGLSync();
+
+        bool isSyncNow() const;
+    private:
+        GRGL_sync m_id;
     };
 }
 

@@ -38,6 +38,159 @@ namespace GRelated {
         ::glDisable(cap);
     }
 
+    void GLFWGLContext::detachObject(GRGL_enum target, GRGLObject* pObj)
+    {
+        auto objType = pObj->type();
+        switch (objType)
+        {
+        case GRelated::ObjectType::kBuffer:
+        {
+            if (m_bufferBoundMap[target] == pObj)
+            {
+                ::glBindBuffer(target, 0);
+            }
+        }
+            break;
+        case GRelated::ObjectType::kTexture:
+        {
+            if (m_textureBoundMap[target] == pObj)
+            {
+                ::glBindTexture(target, 0);
+            }
+        }
+            break;
+        case GRelated::ObjectType::kQuery:
+            break;
+        case GRelated::ObjectType::kFrameBuffer:
+        {
+            if (pObj == m_drawFramebufferObj)
+            {
+                ::glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            }
+            else if (pObj == m_readFramebufferObj)
+            {
+                ::glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            }
+        }
+            break;
+        case GRelated::ObjectType::kRenderBuffer:
+        {
+            if (m_renderbufferObj == pObj)
+            {
+                ::glBindRenderbuffer(GL_RENDERBUFFER, 0);
+            }
+        }
+            break;
+        case GRelated::ObjectType::kSampler:
+            break;
+        case GRelated::ObjectType::kVAO:
+            break;
+        default:
+            break;
+        }
+    }
+
+    void GLFWGLContext::attachObject(GRGL_enum target, GRGLObject* pObj)
+    {
+        auto objType = pObj->type();
+        switch (objType)
+        {
+        case GRelated::ObjectType::kBuffer:
+            m_bufferBoundMap[target] = pObj;
+            break;
+        case GRelated::ObjectType::kTexture:
+            m_textureBoundMap[target] = pObj;
+            break;
+        case GRelated::ObjectType::kQuery:
+            break;
+        case GRelated::ObjectType::kFrameBuffer:
+        {
+            if (target == GL_DRAW_FRAMEBUFFER)
+            {
+                m_drawFramebufferObj = pObj;
+            }
+            else if (target == GL_READ_FRAMEBUFFER)
+            {
+                m_readFramebufferObj = pObj;
+            }
+        }
+            break;
+        case GRelated::ObjectType::kRenderBuffer:
+            m_renderbufferObj = pObj;
+            break;
+        case GRelated::ObjectType::kSampler:
+            break;
+        case GRelated::ObjectType::kVAO:
+            break;
+        default:
+            break;
+        }
+    }
+
+    void GLFWGLContext::record(ObjectPtr ptr)
+    {
+        m_objects.insert(ptr);
+    }
+
+    void GLFWGLContext::release(ObjectPtr ptr)
+    {
+        m_objects.erase(ptr);
+    }
+
+    void GLFWGLContext::grglSetDefaultFramebuffer(FBOType type)
+    {
+        if (type == kDraw)
+        {
+            ::glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        }
+        else if (type == kRead)
+        {
+            ::glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        }
+    }
+
+    void GLFWGLContext::grglBlitFrameBuffer(GRGL_int srcX0, GRGL_int srcY0,
+        GRGL_int srcX1, GRGL_int srcY1,
+        GRGL_int dstX0, GRGL_int dstY0,
+        GRGL_int dstX1, GRGL_int dstY1, std::bitset<8> mask)
+    {
+        GRGL_uint transMask = 0;
+        if (mask.test(static_cast<size_t>(FBInnerBuffer::kColor)))
+        {
+            transMask |= GL_COLOR_BUFFER_BIT;
+        }
+        if (mask.test(static_cast<size_t>(FBInnerBuffer::kDepth)))
+        {
+            transMask |= GL_DEPTH_BUFFER_BIT;
+        }
+        if (mask.test(static_cast<size_t>(FBInnerBuffer::kStencil)))
+        {
+            transMask |= GL_STENCIL_BUFFER_BIT;
+        }
+        ::glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1,
+            transMask, GL_LINEAR);
+    }
+
+    void GLFWGLContext::clearColoriv(GRGL_sizei index, const std::array<GRGL_int, 4>& value)
+    {
+        ::glClearBufferiv(GL_COLOR, GL_DRAW_BUFFER0 + index, value.data());
+    }
+
+    void GLFWGLContext::clearColoruiv(GRGL_sizei index, const std::array<GRGL_uint, 4>& value)
+    {
+        ::glClearBufferuiv(GL_COLOR, GL_DRAW_BUFFER0 + index, value.data());
+    }
+
+    void GLFWGLContext::clearColorfv(GRGL_sizei index, const std::array<GRGL_float, 4>& value)
+    {
+        ::glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0 + index, value.data());
+    }
+
+    void GLFWGLContext::clearDepth(GRGL_float value)
+    {
+        ::glClearBufferfv(GL_DEPTH, 0, &value);
+    }
+
     void GLFWGLContext::_init()
     {
         m_glslVersion = reinterpret_cast<const char*>(
@@ -57,7 +210,7 @@ namespace GRelated {
     {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
-        if (contextType == GRGLContext::kCore)
+        if (contextType == GRGLContext::ContextInfo::kCore)
         {
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         }
