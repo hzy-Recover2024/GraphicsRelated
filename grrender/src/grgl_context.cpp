@@ -12,6 +12,20 @@ namespace GRelated {
         }
     }
 
+    GRGL_enum transGlobalState(GlobalState state)
+    {
+        switch (state)
+        {
+#define ENUM_MAP(NAME) case k##NAME: return GL_##NAME;
+            GLOBAL_STATE_ENUM
+#undef ENUM_MAP
+        default:
+            break;
+        }
+        assert(0);
+        return 0;
+    }
+
     GRGLContext::GRGLContext(ContextInfo contextType)
         : m_contextType(contextType)
     {
@@ -191,6 +205,72 @@ namespace GRelated {
         ::glClearBufferfv(GL_DEPTH, 0, &value);
     }
 
+    void GLFWGLContext::initGlobalState()
+    {
+        // 开启点图元的点大小，并设置点片元的相对坐标
+        ::glEnable(GL_PROGRAM_POINT_SIZE);
+        ::glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT); // 左下角为原点
+        ::glEnable(GL_SCISSOR_TEST);
+        grglViewport(0, 0, m_fbWidth, m_fbHeight);
+        grglDepthRangef(0.f, 1.0f);
+    }
+
+    void GLFWGLContext::grglViewport(GRGL_int x, GRGL_int y, GRGL_sizei width, GRGL_sizei height)
+    {
+        ::glViewport(x, y, width, height);
+        ::glScissor(x, y, width, height);
+    }
+
+    void GLFWGLContext::grglDepthRangef(GRGL_float nearVal, GRGL_float farVal)
+    {
+        ::glDepthRangef(nearVal, farVal);
+    }
+
+    void GLFWGLContext::grglFrontFace(GRGL_enum mode)
+    {
+        ::glFrontFace(mode);
+    }
+
+    void GLFWGLContext::grglCullFace(GRGL_enum mode)
+    {
+        ::glCullFace(mode);
+    }
+
+    void GLFWGLContext::grglStencilFuncSeparate(GRGL_enum face, GRGL_enum func, GRGL_int ref, GRGL_uint mask)
+    {
+        ::glStencilFuncSeparate(face, func, ref, mask);
+    }
+
+    void GLFWGLContext::grglStencilOpSeparate(GRGL_enum face, GRGL_enum sfail, GRGL_enum dpfail, GRGL_enum dppass)
+    {
+        ::glStencilOpSeparate(face, sfail, dpfail, dppass);
+    }
+
+    void GLFWGLContext::grglDepthFunc(GRGL_enum func)
+    {
+        ::glDepthFunc(func);
+    }
+
+    void GLFWGLContext::grglBlendEquationSeparate(GRGL_enum modeRGB, GRGL_enum modeAlpha)
+    {
+        ::glBlendEquationSeparate(modeRGB, modeAlpha);
+    }
+
+    void GLFWGLContext::grglBlendFuncSeparate(GRGL_enum srcRGB, GRGL_enum dstRGB, GRGL_enum srcAlpha, GRGL_enum dstAlpha)
+    {
+        ::glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
+    }
+
+    void GLFWGLContext::grglColorMaski(GRGL_uint buf, bool red, bool green, bool blue, bool alpha)
+    {
+        ::glColorMaski(buf, red, green, blue, alpha);
+    }
+
+    void GLFWGLContext::grglDepthMask(bool flag)
+    {
+        ::glDepthMask(flag);
+    }
+
     void GLFWGLContext::_init()
     {
         m_glslVersion = reinterpret_cast<const char*>(
@@ -227,7 +307,7 @@ namespace GRelated {
         }
         glfwSetKeyCallback(window, key_callback);
         glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
+        glfwSwapInterval(0);
         int version = gladLoadGL();
         if (version == 0) {
             assert(0);

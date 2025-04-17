@@ -59,10 +59,68 @@ namespace GRelated {
 
         //...TODO
     };
+
     // 定义宏来映射 ImageFormat 到 GL 枚举
 #define MAP_FORMAT(fmt, gl_fmt) case fmt: return gl_fmt
+
     extern GRGL_enum transImageFormat(ImageFormat format);
 
+#define GLOBAL_STATE_ENUM \
+    ENUM_MAP(RASTERIZER_DISCARD)\
+    ENUM_MAP(FRONT)\
+    ENUM_MAP(BACK)\
+    ENUM_MAP(FRONT_AND_BACK)\
+    ENUM_MAP(CW)\
+    ENUM_MAP(CCW)\
+    ENUM_MAP(STENCIL_TEST)\
+    ENUM_MAP(DEPTH_TEST)\
+    ENUM_MAP(NEVER)\
+    ENUM_MAP(ALWAYS)\
+    ENUM_MAP(LESS)\
+    ENUM_MAP(LEQUAL)\
+    ENUM_MAP(GREATER)\
+    ENUM_MAP(GEQUAL)\
+    ENUM_MAP(EQUAL)\
+    ENUM_MAP(NOTEQUAL)\
+    ENUM_MAP(KEEP)\
+    ENUM_MAP(ZERO)\
+    ENUM_MAP(REPLACE)\
+    ENUM_MAP(INCR)\
+    ENUM_MAP(INCR_WRAP)\
+    ENUM_MAP(DECR)\
+    ENUM_MAP(DECR_WRAP)\
+    ENUM_MAP(INVERT)\
+    ENUM_MAP(BLEND)\
+    ENUM_MAP(FUNC_ADD)\
+    ENUM_MAP(FUNC_SUBTRACT)\
+    ENUM_MAP(FUNC_REVERSE_SUBTRACT)\
+    ENUM_MAP(MIN)\
+    ENUM_MAP(MAX)\
+    ENUM_MAP(ONE)\
+    ENUM_MAP(ONE_MINUS_SRC_COLOR)\
+    ENUM_MAP(ONE_MINUS_DST_COLOR)\
+    ENUM_MAP(ONE_MINUS_SRC_ALPHA)\
+    ENUM_MAP(ONE_MINUS_DST_ALPHA)\
+    ENUM_MAP(SRC_ALPHA)\
+    ENUM_MAP(DST_ALPHA)\
+
+    enum GlobalState {
+#define ENUM_MAP(NAME) k##NAME,
+        // 背面剔除
+        //kFront, kBack, kFront_and_back, kCW, kCCW,
+        // 逐片元测试
+        //Stencil_test, kDepth_test, kNever, kAlways, kLess, kLequal, kGreater, kGequal, kEqual, kNotequal,
+        // 模板测试通过后的行为
+        //kKeep, kZero, kReplace, kIncr, kIncr_wrap, kDecr, kDecr_wrap, kInvert,
+        // 混合
+        //kBlend, kFunc_add, kFunc_subtract, kFunc_reverse_subtract, kMin, kMax,
+        //kOne, kOne_minus_src_color, kOne_minus_dst_color, kOne_minus_src_alpha, kOne_minus_dst_alpha,
+        //kSrc_alpha, kDst_alpha
+        GLOBAL_STATE_ENUM
+#undef ENUM_MAP
+    };
+
+    extern GRGL_enum transGlobalState(GlobalState);
 }
 #endif // !_GRGL_TYPE_H
 

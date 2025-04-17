@@ -47,11 +47,36 @@ namespace GRelated {
             return m_glslVersion;
         }
 
+        //设置一些全局性质的OpenGL状态
+        virtual void initGlobalState() = 0;
+
         // object的绑定和管理
         virtual void detachObject(GRGL_enum target, GRGLObject* pObj) = 0;
         virtual void attachObject(GRGL_enum target, GRGLObject* pObj) = 0;
         virtual void record(ObjectPtr ptr) = 0;
         virtual void release(ObjectPtr ptr) = 0;
+
+        // x,y代表视口左下角的原点
+        virtual void grglViewport(GRGL_int x, GRGL_int y, GRGL_sizei width, GRGL_sizei height) = 0;
+        virtual void grglDepthRangef(GRGL_float nearVal, GRGL_float farVal) = 0;
+
+        // 背面剔除
+        virtual void grglFrontFace(GRGL_enum mode) = 0;
+        virtual void grglCullFace(GRGL_enum mode) = 0;
+
+        // 片元测试
+        virtual void grglStencilFuncSeparate(GRGL_enum face, GRGL_enum func, GRGL_int ref, GRGL_uint mask) = 0;
+        virtual void grglStencilOpSeparate(GRGL_enum face, GRGL_enum sfail, GRGL_enum dpfail, GRGL_enum dppass) = 0;
+        virtual void grglDepthFunc(GRGL_enum func) = 0;
+
+
+        // 混合
+        virtual void grglBlendEquationSeparate(GRGL_enum modeRGB, GRGL_enum modeAlpha) = 0;
+        virtual void grglBlendFuncSeparate(GRGL_enum srcRGB, GRGL_enum dstRGB, GRGL_enum srcAlpha, GRGL_enum dstAlpha) = 0;
+
+        // 颜色、深度写入控制
+        virtual void grglColorMaski(GRGL_uint buf, bool red, bool green, bool blue, bool alpha) = 0;
+        virtual void grglDepthMask(bool flag) = 0;
 
         virtual void grglFinish() = 0;
         virtual void grglFlush() = 0;
@@ -143,6 +168,42 @@ namespace GRelated {
         void clearColorfv(GRGL_sizei index, const std::array<GRGL_float, 4>& value) override;
 
         void clearDepth(GRGL_float value) override;
+
+
+        void initGlobalState() override;
+
+
+        void grglViewport(GRGL_int x, GRGL_int y, GRGL_sizei width, GRGL_sizei height) override;
+
+
+        void grglDepthRangef(GRGL_float nearVal, GRGL_float farVal) override;
+
+
+        void grglFrontFace(GRGL_enum mode) override;
+
+
+        void grglCullFace(GRGL_enum mode) override;
+
+
+        void grglStencilFuncSeparate(GRGL_enum face, GRGL_enum func, GRGL_int ref, GRGL_uint mask) override;
+
+
+        void grglStencilOpSeparate(GRGL_enum face, GRGL_enum sfail, GRGL_enum dpfail, GRGL_enum dppass) override;
+
+
+        void grglDepthFunc(GRGL_enum func) override;
+
+
+        void grglBlendEquationSeparate(GRGL_enum modeRGB, GRGL_enum modeAlpha) override;
+
+
+        void grglBlendFuncSeparate(GRGL_enum srcRGB, GRGL_enum dstRGB, GRGL_enum srcAlpha, GRGL_enum dstAlpha) override;
+
+
+        void grglColorMaski(GRGL_uint buf, bool red, bool green, bool blue, bool alpha) override;
+
+
+        void grglDepthMask(bool flag) override;
 
     private:
         void _init();

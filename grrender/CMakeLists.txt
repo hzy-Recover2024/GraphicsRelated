@@ -6,6 +6,9 @@ set(HEADERS
     inc/grgl_object.h
     inc/grgl_texture.h
     inc/grgl_FBO.h
+    inc/grgl_vertex_stream.h
+    inc/grgl_vertex_rendering.h
+    inc/grgl_per_sample_test.h
 )
 
 ##记录源文件
@@ -15,6 +18,9 @@ set(SRCS
     src/grgl_object.cpp
     src/grgl_texture.cpp
     src/grgl_FBO.cpp
+    src/grgl_vertex_stream.cpp
+    src/grgl_vertex_rendering.cpp
+    src/grgl_per_sample_test.cpp
 )
 
 ##构建虚拟文件夹
