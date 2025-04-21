@@ -10,7 +10,7 @@
 #include "grgl_object.h"
 #include "grgl_texture.h"
 #include "grgl_FBO.h"
-
+#include "grgl_camera.h"
 namespace GRelated {
     class GRGLContext {
     public:
@@ -215,6 +215,14 @@ namespace GRelated {
 
     private:
         void _init();
+        // ui»Øµ÷º¯Êý
+        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+        static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+        static float lastX;
+        static float lastY;;
+        static bool firstMouse;
+        static GRGLCamera s_camera;
     private:
         void* m_window;
         std::set<ObjectPtr> m_objects;

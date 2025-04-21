@@ -10,6 +10,8 @@ set(HEADERS
     inc/grgl_vertex_rendering.h
     inc/grgl_per_sample_test.h
     inc/grgl_vertex_pipeline.h
+    inc/stb_image.h
+    inc/grgl_camera.h
 )
 
 ##记录源文件
@@ -23,6 +25,7 @@ set(SRCS
     src/grgl_vertex_rendering.cpp
     src/grgl_per_sample_test.cpp
     src/grgl_vertex_pipeline.cpp
+    src/grgl_camera.cpp
 )
 
 ##构建虚拟文件夹
@@ -35,7 +38,7 @@ add_library(${PROJECT_NAME} STATIC ${SRCS} ${HEADERS})
 find_package(OpenGL REQUIRED)
 
 ##头文件可见
-target_include_directories(${PROJECT_NAME} PUBLIC inc/)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc/ ${CMAKE_CURRENT_SOURCE_DIR}/)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC grmath performanceTool ${OPENGL_LIBRARIES} glm glfw glad)
 
