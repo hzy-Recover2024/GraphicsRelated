@@ -6,6 +6,8 @@
 #include "grgl_type.h"
 #include <bitset>
 #include <memory>
+#include <string>
+#include <set>
 namespace GRelated {
     class GRGLContext;
     class GRGLObject;
@@ -61,7 +63,7 @@ namespace GRelated {
 
         }
 
-        virtual ~GRGLGenericObject()
+        ~GRGLGenericObject() override
         {
 
         }
@@ -244,9 +246,10 @@ namespace GRelated {
         GRGL_enum m_bound;
     };
 
+    class GRGLShader;
     class GRGLProgram : public GRGLObject {
     protected:
-        GRGLProgram(GRGLContext& context);
+        explicit GRGLProgram(GRGLContext& context);
     public:
         static std::shared_ptr<GRGLProgram> create(GRGLContext& context)
         {
@@ -260,13 +263,65 @@ namespace GRelated {
         }
         GRGLProgram(const GRGLProgram&) = delete;
         GRGLProgram& operator=(const GRGLProgram&) = delete;
-        ~GRGLProgram();
-        // TODO
+        ~GRGLProgram() override;
+
+        void attachShader(std::shared_ptr<GRGLShader> shader);
+        bool link();
+
+        void use();
+
+    private:
+        GRGL_uint m_id;
+        bool m_linkState = false;
+        std::set<std::shared_ptr<GRGLShader>> m_shaderCache;
+    };
+
+    enum class ShaderType
+    {
+        kVertexShader,
+        kTess_control_shader,
+        kTess_evaluation_shader,
+        kGeometry_shader,
+        kFragment_shader,
+        kCompute_shader
     };
 
     class GRGLShader : public GRGLObject {
+    protected:
+        GRGLShader(GRGLContext& context, ShaderType type, const std::string& source);
     public:
-        // TODO
+        static std::shared_ptr<GRGLShader> create(GRGLContext& context, ShaderType type,
+            const std::string& source)
+        {
+            std::shared_ptr<GRGLShader> newPtr(new GRGLShader(context, type, source));
+            newPtr->registerContext();
+            return newPtr;
+        }
+        ~GRGLShader() override;
+    public:
+
+        ObjectType type() const override
+        {
+            return ObjectType::kShader;
+        }
+
+        GRGL_uint id() const
+        {
+            return m_id;
+        }
+
+        bool compile();
+
+        std::string infolog() const
+        {
+            return m_infolog;
+        }
+
+    private:
+        GRGL_uint m_id = 0;
+        std::string m_code;
+        std::string m_infolog;
+        bool m_isCompiled = false;
     };
 
     class GRGLSync : public GRGLObject {

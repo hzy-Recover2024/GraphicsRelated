@@ -16,7 +16,7 @@ namespace GRelated {
     {
         switch (state)
         {
-#define ENUM_MAP(NAME) case k##NAME: return GL_##NAME;
+#define ENUM_MAP(NAME) case GlobalState::k##NAME: return GL_##NAME;
             GLOBAL_STATE_ENUM
 #undef ENUM_MAP
         default:
@@ -269,6 +269,16 @@ namespace GRelated {
     void GLFWGLContext::grglDepthMask(bool flag)
     {
         ::glDepthMask(flag);
+    }
+
+    void GLFWGLContext::grglEnablei(GRGL_enum cap, GRGL_uint index)
+    {
+        ::glEnablei(cap, index);
+    }
+
+    void GLFWGLContext::grglDisablei(GRGL_enum cap, GRGL_uint index)
+    {
+        ::glDisablei(cap, index);
     }
 
     void GLFWGLContext::_init()

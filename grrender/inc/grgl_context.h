@@ -83,6 +83,8 @@ namespace GRelated {
 
         virtual void grglEnable(GRGL_enum cap) = 0;
         virtual void grglDisable(GRGL_enum cap) = 0;
+        virtual void grglEnablei(GRGL_enum cap, GRGL_uint index) = 0;
+        virtual void grglDisablei(GRGL_enum cap, GRGL_uint index) = 0;
 
 
         // framebufferÏà¹Øº¯Êý
@@ -204,6 +206,12 @@ namespace GRelated {
 
 
         void grglDepthMask(bool flag) override;
+
+
+        void grglEnablei(GRGL_enum cap, GRGL_uint index) override;
+
+
+        void grglDisablei(GRGL_enum cap, GRGL_uint index) override;
 
     private:
         void _init();

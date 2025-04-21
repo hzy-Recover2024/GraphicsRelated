@@ -16,7 +16,7 @@
 #define GRGL_sync uintptr_t
 #define GRGL_float GRfloat
 namespace GRelated {
-    enum TypeEnum {
+    enum class TypeEnum {
         kHALF_FLOAT,
         kFLOAT,
         kBYTE,
@@ -28,7 +28,7 @@ namespace GRelated {
     };
     extern GRGL_enum transEnum(TypeEnum);
 
-    enum ImageFormat {
+    enum class ImageFormat {
         kR8, //无符号8位归一化整数
         kRG8,
         kRGB8,
@@ -104,7 +104,7 @@ namespace GRelated {
     ENUM_MAP(SRC_ALPHA)\
     ENUM_MAP(DST_ALPHA)\
 
-    enum GlobalState {
+    enum class GlobalState {
 #define ENUM_MAP(NAME) k##NAME,
         // 背面剔除
         //kFront, kBack, kFront_and_back, kCW, kCCW,

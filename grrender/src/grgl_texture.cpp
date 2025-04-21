@@ -61,39 +61,36 @@ namespace GRelated {
             }
             return parameter;
         }
-
-
-
     }
 
     GRGL_enum transImageFormat(ImageFormat format)
     {
         switch (format)
         {
-            MAP_FORMAT(kR8, GL_R8);
-            MAP_FORMAT(kRG8, GL_RG8);
-            MAP_FORMAT(kRGB8, GL_RGB8);
-            MAP_FORMAT(kRGBA8, GL_RGBA8);
-            MAP_FORMAT(kR16, GL_R16);
-            MAP_FORMAT(kRG16, GL_RG16);
-            MAP_FORMAT(kRGB16, GL_RGB16);
-            MAP_FORMAT(kRGBA16, GL_RGBA16);
-            MAP_FORMAT(kR16F, GL_R16F);
-            MAP_FORMAT(kRG16F, GL_RG16F);
-            MAP_FORMAT(kRGB16F, GL_RGB16F);
-            MAP_FORMAT(kRGBA16F, GL_RGBA16F);
-            MAP_FORMAT(kR32F, GL_R32F);
-            MAP_FORMAT(kRG32F, GL_RG32F);
-            MAP_FORMAT(kRGB32F, GL_RGB32F);
-            MAP_FORMAT(kRGBA32F, GL_RGBA32F);
-            MAP_FORMAT(kDepth24, GL_DEPTH_COMPONENT24);
-            MAP_FORMAT(kDepth32, GL_DEPTH_COMPONENT32);
-            MAP_FORMAT(kDepth32F, GL_DEPTH_COMPONENT32F);
-            MAP_FORMAT(kDepth24Stencil8, GL_DEPTH24_STENCIL8);
+            MAP_FORMAT(ImageFormat::kR8, GL_R8);
+            MAP_FORMAT(ImageFormat::kRG8, GL_RG8);
+            MAP_FORMAT(ImageFormat::kRGB8, GL_RGB8);
+            MAP_FORMAT(ImageFormat::kRGBA8, GL_RGBA8);
+            MAP_FORMAT(ImageFormat::kR16, GL_R16);
+            MAP_FORMAT(ImageFormat::kRG16, GL_RG16);
+            MAP_FORMAT(ImageFormat::kRGB16, GL_RGB16);
+            MAP_FORMAT(ImageFormat::kRGBA16, GL_RGBA16);
+            MAP_FORMAT(ImageFormat::kR16F, GL_R16F);
+            MAP_FORMAT(ImageFormat::kRG16F, GL_RG16F);
+            MAP_FORMAT(ImageFormat::kRGB16F, GL_RGB16F);
+            MAP_FORMAT(ImageFormat::kRGBA16F, GL_RGBA16F);
+            MAP_FORMAT(ImageFormat::kR32F, GL_R32F);
+            MAP_FORMAT(ImageFormat::kRG32F, GL_RG32F);
+            MAP_FORMAT(ImageFormat::kRGB32F, GL_RGB32F);
+            MAP_FORMAT(ImageFormat::kRGBA32F, GL_RGBA32F);
+            MAP_FORMAT(ImageFormat::kDepth24, GL_DEPTH_COMPONENT24);
+            MAP_FORMAT(ImageFormat::kDepth32, GL_DEPTH_COMPONENT32);
+            MAP_FORMAT(ImageFormat::kDepth32F, GL_DEPTH_COMPONENT32F);
+            MAP_FORMAT(ImageFormat::kDepth24Stencil8, GL_DEPTH24_STENCIL8);
         default:
             break;
         }
-        return format;
+        return static_cast<GRGL_enum>(format);
     }
 
     GRGLTextureObject::GRGLTextureObject(GRGLContext& context, TextureTarget target,

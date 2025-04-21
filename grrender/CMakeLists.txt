@@ -9,6 +9,7 @@ set(HEADERS
     inc/grgl_vertex_stream.h
     inc/grgl_vertex_rendering.h
     inc/grgl_per_sample_test.h
+    inc/grgl_vertex_pipeline.h
 )
 
 ##记录源文件
@@ -21,6 +22,7 @@ set(SRCS
     src/grgl_vertex_stream.cpp
     src/grgl_vertex_rendering.cpp
     src/grgl_per_sample_test.cpp
+    src/grgl_vertex_pipeline.cpp
 )
 
 ##构建虚拟文件夹

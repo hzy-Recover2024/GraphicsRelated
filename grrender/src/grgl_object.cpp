@@ -44,32 +44,53 @@ namespace GRelated {
             }
         }
 
+        GRGL_enum transShaderType(ShaderType type)
+        {
+            switch (type)
+            {
+            case GRelated::ShaderType::kVertexShader:
+                return GL_VERTEX_SHADER;
+            case GRelated::ShaderType::kTess_control_shader:
+                return GL_TESS_CONTROL_SHADER;
+            case GRelated::ShaderType::kTess_evaluation_shader:
+                return GL_TESS_EVALUATION_SHADER;
+            case GRelated::ShaderType::kGeometry_shader:
+                return GL_GEOMETRY_SHADER;
+            case GRelated::ShaderType::kFragment_shader:
+                return GL_FRAGMENT_SHADER;
+            case GRelated::ShaderType::kCompute_shader:
+                return GL_COMPUTE_SHADER;
+            default:
+                break;
+            }
+        }
+
     }
 
     GRGL_enum transEnum(TypeEnum type)
     {
         switch (type)
         {
-        case GRelated::kHALF_FLOAT:
+        case TypeEnum::kHALF_FLOAT:
             return GL_HALF_FLOAT;
-        case GRelated::kFLOAT:
+        case TypeEnum::kFLOAT:
             return GL_FLOAT;
-        case GRelated::kBYTE:
+        case TypeEnum::kBYTE:
             return GL_BYTE;
-        case GRelated::kUNSIGNED_BYTE:
+        case TypeEnum::kUNSIGNED_BYTE:
             return GL_UNSIGNED_BYTE;
-        case GRelated::kSHORT:
+        case TypeEnum::kSHORT:
             return GL_SHORT;
-        case GRelated::kUNSIGNED_SHORT:
+        case TypeEnum::kUNSIGNED_SHORT:
             return GL_UNSIGNED_SHORT;
-        case GRelated::kINT:
+        case TypeEnum::kINT:
             return GL_INT;
-        case GRelated::kUNSIGNED_INT:
+        case TypeEnum::kUNSIGNED_INT:
             return GL_UNSIGNED_INT;
         default:
             break;
         }
-        return type;
+        return static_cast<GRGL_enum>(type);
     }
 
 
@@ -347,6 +368,115 @@ namespace GRelated {
             return res;
         }
         return 0;
+    }
+
+    GRGLProgram::GRGLProgram(GRGLContext& context)
+        : GRGLObject(context)
+    {
+        m_id = ::glCreateProgram();
+    }
+
+    GRGLProgram::~GRGLProgram()
+    {
+        ::glDeleteProgram(m_id);
+    }
+
+    void GRGLProgram::attachShader(std::shared_ptr<GRGLShader> shader)
+    {
+        if (m_linkState)
+        {
+            return;
+        }
+        ::glAttachShader(m_id, shader->id());
+        m_shaderCache.insert(shader);
+    }
+
+    bool GRGLProgram::link()
+    {
+        if (m_linkState)
+        {
+            return true;
+        }
+        // Link our program
+        glLinkProgram(m_id);
+
+        // Note the different functions here: glGetProgram* instead of glGetShader*.
+        GRGL_int isLinked = 0;
+        glGetProgramiv(m_id, GL_LINK_STATUS, &isLinked);
+        if (isLinked == GL_FALSE)
+        {
+            GRGL_int maxLength = 0;
+            glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
+
+            // The maxLength includes the NULL character
+            std::string infoLog;
+            infoLog.resize(maxLength);
+            glGetProgramInfoLog(m_id, maxLength, &maxLength, &infoLog[0]);
+
+            // We don't need the program anymore.
+            glDeleteProgram(m_id);
+            assert(0);
+            return false;
+        }
+
+        // Always detach shaders after a successful link.
+        for (auto&& curShader : m_shaderCache)
+        {
+            ::glDetachShader(m_id, curShader->id());
+        }
+        m_shaderCache.clear();
+        m_linkState = true;
+        return true;
+    }
+
+    void GRGLProgram::use()
+    {
+        if (!m_linkState)
+        {
+            assert(link());
+        }
+        ::glUseProgram(m_id);
+    }
+
+    GRGLShader::GRGLShader(GRGLContext& context, ShaderType type, const std::string& source)
+        : GRGLObject(context), m_code(source)
+    {
+        m_id =  ::glCreateShader(transShaderType(type));
+        const GLchar* csource = (const GLchar*)source.c_str();
+        ::glShaderSource(m_id, 1, &csource, nullptr);
+    }
+
+    GRGLShader::~GRGLShader()
+    {
+        ::glDeleteShader(m_id);
+    }
+
+    bool GRGLShader::compile()
+    {
+        if (m_isCompiled)
+        {
+            return m_isCompiled;
+        }
+        ::glCompileShader(m_id);
+        GRGL_int isCompiled = 0;
+        glGetShaderiv(m_id, GL_COMPILE_STATUS, &isCompiled);
+        if (isCompiled)
+        {
+            m_isCompiled = true;
+        }
+        else
+        {
+            GRGL_int maxLength = 0;
+            glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
+            // The maxLength includes the NULL character
+            std::string tmp;
+            tmp.resize(maxLength);
+            m_infolog.swap(tmp);
+            glGetShaderInfoLog(m_id, maxLength, &maxLength, &m_infolog[0]);
+
+            assert(0);
+        }
+        return m_isCompiled;
     }
 
     GRGLSync::GRGLSync(GRGLContext& context)
