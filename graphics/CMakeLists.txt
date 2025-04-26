@@ -5,7 +5,9 @@ set(HEADERS
     inc/drawable_node_proxy.h 
     inc/node.h
     inc/node_visitor.h
-    inc/transform_node.h)
+    inc/transform_node.h
+    inc/engine.h
+)
 
 ##记录源文件
 set(SRCS 
@@ -13,19 +15,22 @@ set(SRCS
     src/drawable_node_proxy.cpp 
     src/node.cpp
     src/node_visitor.cpp
-    src/transform_node.cpp)
+    src/transform_node.cpp
+    src/engine.cpp
+    src/main.cpp
+)
 
 ##构建虚拟文件夹
 source_group("inc" FILES ${HEADERS})
 source_group("src" FILES ${SRCS})
 
 ##生成库
-add_library(${PROJECT_NAME} STATIC ${SRCS} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SRCS} ${HEADERS})
 
 ##头文件可见
-target_include_directories(${PROJECT_NAME} PUBLIC inc/)
+target_include_directories(${PROJECT_NAME} PUBLIC inc/ ${CMAKE_SOURCE_DIR}/)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC grmath performanceTool octree)
+target_link_libraries(${PROJECT_NAME} PUBLIC grmath performanceTool octree grrender)
 
 ##编译标志
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
@@ -50,3 +55,23 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         >
     )
 endif()
+# 自动复制 DLL 到输出目录
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "${CMAKE_SOURCE_DIR}/dlls/assimp-vc140-mt.dll"
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+# 构建时复制资源文件到输出目录
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${RESOURCE_DIR}"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resource"
+)
+
+# 构建时复制资源文件到输出目录
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${SHADER_DIR}"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/shader"
+)

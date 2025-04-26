@@ -11,6 +11,7 @@
 #include "grgl_texture.h"
 #include "grgl_FBO.h"
 #include "grgl_camera.h"
+class GLFWwindow;
 namespace GRelated {
     class GRGLContext {
     public:

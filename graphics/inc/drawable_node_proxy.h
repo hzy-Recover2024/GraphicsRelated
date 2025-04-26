@@ -22,17 +22,31 @@ namespace GRelated {
             return m_attribute;
         }
 
-        void addChild(NodeProxyPtr child);
-        void removeChild(NodeProxyPtr child);
-        void addParent(DrawableNodeProxy*);
-        void removeParent(DrawableNodeProxy*);
+        void addChild(NodeProxyPtr child)
+        {
+            m_childList.push_back(child);
+        }
+        void removeChild(NodeProxyPtr child)
+        {
+            m_childList.erase(std::remove(
+                m_childList.begin(), m_childList.end(), child),
+                m_childList.end());
+        }
+        void addParent(DrawableNodeProxy* par)
+        {
+            m_parent = par;
+        }
+        void removeParent(DrawableNodeProxy* par)
+        {
+            m_parent = nullptr;
+        }
 
     private:
         DrawableNode* m_associatedNode = nullptr;
         MatrixDummy m_mat;
         StateSetDummy m_attribute;
         DrawableNodeProxy* m_parent;
-        std::vector<DrawableNodeProxy> m_childList;
+        std::vector<NodeProxyPtr> m_childList;
     };
 }
 #endif // !_DRAWABLE_NODE_PROXY_H

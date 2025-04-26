@@ -5,6 +5,7 @@
 #include "node.h"
 #include <vector>
 #include <memory>
+#include "grgl_mesh.h"
 namespace GRelated {
     struct GeometryDataDummy  //TODO
     {
@@ -19,6 +20,7 @@ namespace GRelated {
     class DrawableNode : public Node<DrawableNode> {
     public:
         DrawableNode() = default;
+        explicit DrawableNode(const std::vector<std::shared_ptr<GRGLMesh>>& mesh);
         ~DrawableNode() = default;
 
         // 节点的连接
@@ -64,6 +66,10 @@ namespace GRelated {
             return m_observer[index].lock();
         }
 
+        std::vector<std::weak_ptr<GRGLMesh>> geoDatas() const
+        {
+            return m_geoDatas;
+        }
     private:
         GeometryDataDummy m_data;
         StateSetDummy m_attribute;
@@ -71,6 +77,7 @@ namespace GRelated {
         std::vector<NodePtr> m_childList;
 
         std::vector<std::weak_ptr<DrawableNodeProxy>> m_observer;
+        std::vector<std::weak_ptr<GRGLMesh>> m_geoDatas;
         bool m_nodeDirty = false; //node是否需要更新，或者node是否为新
     };
 }

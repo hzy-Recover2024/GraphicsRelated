@@ -354,8 +354,8 @@ namespace GRelated {
         ::glfwPollEvents();
     }
 
-    float GLFWGLContext::lastX = SCR_WIDTH / 2.0f;
-    float GLFWGLContext::lastY = SCR_HEIGHT / 2.0f;
+    float GLFWGLContext::lastX = 0.f;
+    float GLFWGLContext::lastY = 0.f;
     bool GLFWGLContext::firstMouse = true;
     GRGLCamera GLFWGLContext::s_camera;
     void GLFWGLContext::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

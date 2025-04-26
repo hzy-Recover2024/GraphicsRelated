@@ -11,8 +11,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)   # 要求编译器必须支持 C11
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 ##构建glm项目
 option(GLM_BUILD_LIBRARY "Build dynamic/static library" ON)
-
-
+set(ASSIMP_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/lib/assimp.lib)
+set(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resource/")
+set(SHADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shader/")
 ##子项目
 add_subdirectory(glm)
 add_subdirectory(glad)

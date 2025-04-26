@@ -3,6 +3,14 @@
 #include "drawable_node_proxy.h"
 namespace GRelated {
    
+    DrawableNode::DrawableNode(const std::vector<std::shared_ptr<GRGLMesh>>& meshes)
+    {
+        for (auto& mesh : meshes)
+        {
+            m_geoDatas.push_back(mesh);
+        }
+    }
+
     void DrawableNode::addParent(NodeBase* pNode)
     {
         auto pos = std::lower_bound(m_parentList.begin(), m_parentList.end(), pNode);
@@ -12,8 +20,6 @@ namespace GRelated {
         }
         m_parentList.insert(pos, pNode);
     }
-
-
 
     void DrawableNode::removeParent(NodeBase* pNode)
     {
