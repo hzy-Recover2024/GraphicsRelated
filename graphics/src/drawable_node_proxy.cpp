@@ -3,10 +3,13 @@
 #include <assert.h>
 namespace GRelated {
 
-    DrawableNodeProxy::DrawableNodeProxy(DrawableNode* pNode, const MatrixDummy& mat)
+    DrawableNodeProxy::DrawableNodeProxy(DrawableNode* pNode, const glm::mat4& mat)
         : m_associatedNode(pNode), m_mat(mat)
     {
         m_associatedNode->attach(shared_from_this());
+        m_color.x = rand() % 255 / 255.0;
+        m_color.y = rand() % 255 / 255.0;
+        m_color.z = rand() % 255 / 255.0;
     }
 
 

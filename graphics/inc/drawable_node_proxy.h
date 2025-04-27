@@ -3,19 +3,18 @@
 #define _DRAWABLE_NODE_PROXY_H
 #include "b_box.h"
 #include "drawable_node.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 namespace GRelated {
     class DrawableNode;
 
     class DrawableNodeProxy : public std::enable_shared_from_this<DrawableNodeProxy> {
     public:
-        DrawableNodeProxy(DrawableNode* pNode, const MatrixDummy& mat);
+        DrawableNodeProxy(DrawableNode* pNode, const glm::mat4& mat);
         ~DrawableNodeProxy();
 
         Bounding_box boundingBox() const;
-        const MatrixDummy& mat() const
-        {
-            return m_mat;
-        }
+
 
         const StateSetDummy& attribute() const
         {
@@ -36,16 +35,38 @@ namespace GRelated {
         {
             m_parent = par;
         }
-        void removeParent(DrawableNodeProxy* par)
+
+        DrawableNodeProxy* parent() const
+        {
+            return m_parent;
+        }
+
+        void removeParent()
         {
             m_parent = nullptr;
         }
 
+        const glm::mat4& mat() const
+        {
+            return m_mat;
+        }
+
+        const glm::vec3& color() const
+        {
+            return m_color;
+        }
+
+        DrawableNode* associatedNode() const
+        {
+            return m_associatedNode;
+        }
+
     private:
         DrawableNode* m_associatedNode = nullptr;
-        MatrixDummy m_mat;
+        glm::mat4 m_mat;
+        glm::vec3 m_color;
         StateSetDummy m_attribute;
-        DrawableNodeProxy* m_parent;
+        DrawableNodeProxy* m_parent = nullptr;
         std::vector<NodeProxyPtr> m_childList;
     };
 }

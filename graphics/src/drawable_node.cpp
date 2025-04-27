@@ -108,5 +108,41 @@ namespace GRelated {
         }
     }
 
+    GRUINT32 DrawableNode::vertexCount() const
+    {
+        if (m_vertexCount != 0)
+        {
+            return m_vertexCount;
+        }
+        for (const auto& mesh : m_geoDatas)
+        {
+            auto pMesh = mesh.lock();
+            if (pMesh)
+            {
+                m_vertexCount += pMesh->vertices().size();
+                m_indexCount += pMesh->indices().size();
+            }
+        }
+        return m_vertexCount;
+    }
+
+    GRUINT32 DrawableNode::indexCount() const
+    {
+        if (m_indexCount != 0)
+        {
+            return m_indexCount;
+        }
+        for (const auto& mesh : m_geoDatas)
+        {
+            auto pMesh = mesh.lock();
+            if (pMesh)
+            {
+                m_vertexCount += pMesh->vertices().size();
+                m_indexCount += pMesh->indices().size();
+            }
+        }
+        return m_indexCount;
+    }
+
 }
 

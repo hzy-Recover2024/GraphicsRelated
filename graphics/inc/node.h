@@ -9,10 +9,6 @@ namespace GRelated {
     class NodeVisitor;
     class NodeBase;
     using NodePtr = std::shared_ptr<NodeBase>;
-    struct MatrixDummy //TODO
-    {
-
-    };
 
     class NodeBase {
     public:
@@ -23,6 +19,8 @@ namespace GRelated {
             kDrawable
         };
 
+        virtual NodeType nodeType() const = 0;
+
         // 节点的连接
         virtual void addParent(NodeBase*) = 0;
         virtual void removeParent(NodeBase*) = 0;
@@ -30,6 +28,7 @@ namespace GRelated {
         virtual void addChild(NodePtr) = 0;
         virtual void removeChild(NodePtr) = 0;
         virtual NodePtr getChild(GRUINT32 idx) const = 0;
+        virtual GRUINT32 childNum() const = 0;
 
         // 节点访问
         virtual void accept(NodeVisitor&) = 0;

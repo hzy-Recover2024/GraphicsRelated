@@ -3,18 +3,24 @@
 #define _TRANSFORM_NODE_H
 
 #include "node.h"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 namespace GRelated {
 
     class TransformNode : public Node<TransformNode>
     {
     public:
-        explicit TransformNode(const MatrixDummy& mat)
+        explicit TransformNode(const glm::mat4& mat)
             : m_mat(mat)
         {
 
         }
         ~TransformNode() = default;
+
+        NodeType nodeType() const override
+        {
+            return NodeBase::kTransform;
+        }
 
         // 节点的连接
         void addParent(NodeBase*) override;
@@ -23,6 +29,10 @@ namespace GRelated {
         void addChild(NodePtr) override;
         void removeChild(NodePtr) override;
         NodePtr getChild(GRUINT32 idx) const override;
+        GRUINT32 childNum() const override
+        {
+            return 1;
+        }
 
         // 节点访问
         void accept(NodeVisitor&) override;
@@ -31,18 +41,18 @@ namespace GRelated {
         // 访问孩子
         void traverse(NodeVisitor&) override;
 
-        void setMat(const MatrixDummy& mat)
+        void setMat(const glm::mat4& mat)
         {
             m_mat = mat;
         }
 
-        MatrixDummy mat() const
+        glm::mat4 mat() const
         {
             return m_mat;
         }
 
     private:
-        MatrixDummy m_mat;
+        glm::mat4 m_mat;
         NodeBase* m_parent;
         NodePtr m_child;
     };

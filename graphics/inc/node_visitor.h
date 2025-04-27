@@ -3,6 +3,8 @@
 #define _NODE_VISITOR_H
 
 #include "node.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 namespace GRelated {
     class NodeBase;
     class TransformNode;
@@ -13,7 +15,6 @@ namespace GRelated {
         kBuildSceneTree,
         kUpdate
     };
-    class MatrixDummy;
 
     class NodeVisitor {
     public:
@@ -37,7 +38,7 @@ namespace GRelated {
         NodeVisitorType m_type;
         std::vector<NodeBase*> m_path;
         std::vector<DrawableNodeProxy*> m_nodeProxyPath;
-        std::vector<MatrixDummy> m_matAcc;
+        std::vector<glm::mat4> m_matAcc;
     };
 }
 #endif // !_NODE_VISITOR_H
