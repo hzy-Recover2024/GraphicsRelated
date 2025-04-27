@@ -26,15 +26,17 @@ namespace GRelated {
             return;
         }
         m_needUpade = true;
-        long long vertexsize = (long long)m_vertexCountProbably * sizeof(VertexNormal) * 1.2;
+        long long vertexsize = static_cast<long long>(m_vertexCountProbably * sizeof(VertexNormal) * 1.2);
         auto newVbo = GRGLBufferObject::create(*pContext, ObjectTarget::kVBO,
             static_cast<GRGL_sizeiptr>(vertexsize)
             , nullptr, true);
-        long long indexSize = (long long)m_vertexCountProbably * sizeof(GRGL_uint) * 1.2;
+        newVbo->registerContext();
+        long long indexSize = static_cast<long long>(m_vertexCountProbably * sizeof(GRGL_uint) * 1.2);
         m_vbo = newVbo;
         auto newEbo = GRGLBufferObject::create(*pContext, ObjectTarget::kEBO,
             static_cast<GRGL_sizeiptr>(m_vertexCountProbably * sizeof(GRGL_uint) * 1.2)
             , nullptr, true);
+        newEbo->registerContext();
         m_ebo = newEbo;
 
         // map and upload data
@@ -100,6 +102,35 @@ namespace GRelated {
             return 0;
         }
         return m_nodelist[itr->second].indexOffset;
+    }
+
+    void VertexStream::setupVertexFormat(
+        std::shared_ptr<GRGLVertexArrayObject> vao)
+    {
+        if (vao == nullptr)
+        {
+            return;
+        }
+        vao->bind();
+        auto vbo = m_vbo.lock();
+        if (vbo)
+        {
+            vbo->bind();
+        }
+        vao->enableVertexAttribArray(0);
+        vao->enableVertexAttribArray(1);
+        vao->vertexAttriPointer(0, 3, TypeEnum::kFLOAT,
+            false, sizeof(VertexNormal), offsetof(VertexNormal, pos));
+        vao->vertexAttriPointer(1, 3, TypeEnum::kFLOAT, false,
+            sizeof(VertexNormal), offsetof(VertexNormal, normal));
+        auto ebo = m_ebo.lock();
+        if (ebo)
+        {
+            ebo->bind();
+        }
+        vao->unbind();
+        ebo->unbind();
+        vbo->unbind();
     }
 
 }

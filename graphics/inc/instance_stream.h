@@ -13,7 +13,8 @@ namespace GRelated {
     public:
         void addNode(DrawableNodeProxy* pNode);
         void uploadInstace(GLFWGLContext* pContext);
-
+        void setupVertexFormat(
+            std::shared_ptr<GRGLVertexArrayObject> vao);
     private:
         bool m_needUpdate = false;
         std::map<DrawableNode*, std::vector<DrawableNodeProxy*>> m_nodeLayout;

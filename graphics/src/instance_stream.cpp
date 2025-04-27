@@ -36,6 +36,7 @@ namespace GRelated {
             static_cast<GRGL_sizeiptr>(insSize),
             nullptr, true
         );
+        newVBO->registerContext();
         m_insvbo = newVBO;
 
         auto ssboSize = (long long)(m_insCount * sizeof(MatData) * 1.2);
@@ -43,6 +44,7 @@ namespace GRelated {
             static_cast<GRGL_sizeiptr>(ssboSize),
             nullptr, true
         );
+        newSSBO->registerContext();
         m_matSSBO = newSSBO;
         newVBO->bind();
         auto pinsData = reinterpret_cast<InstanceData*>(newVBO->map(0, static_cast<GRGL_sizeiptr>(insSize)));
@@ -65,6 +67,27 @@ namespace GRelated {
         newSSBO->unmap();
         newVBO->unbind();
         newSSBO->unbind();
+    }
+
+    void InstanceStream::setupVertexFormat(
+        std::shared_ptr<GRGLVertexArrayObject> vao)
+    {
+        if (vao == nullptr)
+        {
+            return;
+        }
+        vao->bind();
+        auto vbo = m_insvbo.lock();
+        if (vbo)
+        {
+            vbo->bind();
+        }
+        vao->enableVertexAttribArray(2);
+        vao->vertexAttriPointer(2, 4, TypeEnum::kFLOAT,
+            false, sizeof(InstanceData), offsetof(InstanceData, color));
+        vao->vertexAttribDivisor(2, 1);
+        vao->unbind();
+        vbo->unbind();
     }
 
 }

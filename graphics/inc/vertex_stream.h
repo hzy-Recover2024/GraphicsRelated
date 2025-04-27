@@ -8,12 +8,15 @@
 namespace GRelated {
     class GLFWGLContext;
     class DrawableNode;
+    class GRGLVertexArrayObject;
     class VertexStream {
     public:
         void addNode(DrawableNode* pNode);
         void uploadVertex(GLFWGLContext* pContext);
         GRUINT32 getVertexOffset(DrawableNode* pNode);
         GRUINT32 getIndexOffset(DrawableNode* pNode);
+
+        void setupVertexFormat(std::shared_ptr<GRGLVertexArrayObject> vao);
     private:
         struct NodeVertexOffset
         {
