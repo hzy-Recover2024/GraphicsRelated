@@ -13,7 +13,7 @@ namespace GRelated {
     public:
         virtual ~RenderBatch() = default;
     };
-    class TriangleBatch {
+    class TriangleBatch : public RenderBatch {
     public:
         void buildCommand(GLFWGLContext&, InstanceStream&, VertexStream&);
         void draw();

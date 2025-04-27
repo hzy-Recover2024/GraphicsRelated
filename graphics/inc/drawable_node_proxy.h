@@ -61,6 +61,16 @@ namespace GRelated {
             return m_associatedNode;
         }
 
+        GRUINT32 childNum() const
+        {
+            return m_childList.size();
+        }
+
+        DrawableNodeProxy* getChild(GRUINT32 index)
+        {
+            return m_childList[index].get();
+        }
+
     private:
         DrawableNode* m_associatedNode = nullptr;
         glm::mat4 m_mat;

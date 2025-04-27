@@ -14,6 +14,10 @@ namespace GRelated {
 
     void VertexStream::addNode(const DrawableNode* pNode)
     {
+        if (pNode->geoDatas().empty())
+        {
+            return;
+        }
         m_nodelist.push_back({ pNode });
         m_vertexCountProbably += pNode->vertexCount();
         m_loactionMap[pNode] = m_nodelist.size() - 1;

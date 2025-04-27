@@ -5,10 +5,39 @@
 #include "drawable_node.h"
 #include "drawable_node_proxy.h"
 #include "transform_node.h"
+#include "grgl_context.h"
 namespace GRelated {
     float View::lastX = 0.f;
     float View::lastY = 0.f;
     bool View::firstMouse = true;
+
+    namespace {
+        struct alignas(16) CameraInfo
+        {
+            glm::mat4 view;
+            glm::mat4 projection;
+            glm::mat4 vp;
+        };
+    }
+
+
+    void View::updateCamera(GLFWGLContext* pCtx)
+    {
+        if (!m_ubo.expired())
+        {
+            auto ubo = GRGLBufferObject::create(*pCtx, ObjectTarget::kUBO,
+                sizeof(CameraInfo), nullptr, true);
+            ubo->registerContext();
+        }
+        auto ubo = m_ubo.lock();
+        ubo->bind();
+        auto pCamera = reinterpret_cast<CameraInfo*>(ubo->map(0, sizeof(CameraInfo)));
+        pCamera->view = getCamera().GetViewMatrix();
+        pCamera->projection = glm::perspective(glm::radians(getCamera().Zoom), (float)pCtx->fbWidth() / (float)pCtx->fbHeight(), 0.1f, 100.0f);
+        pCamera->vp = pCamera->projection * pCamera->view;
+        ubo->unmap();
+        ubo->unbind();
+    }
 
     void View::buildScene()
     {
@@ -37,7 +66,26 @@ namespace GRelated {
 
     void View::uploadInstance(GLFWGLContext* pContext)
     {
-
+        if (m_insStream == nullptr)
+        {
+            m_insStream = std::make_unique<InstanceStream>();
+        }
+        std::vector<DrawableNodeProxy*> nodeSk;
+        for (auto& node : m_rootList)
+        {
+            nodeSk.push_back(node.get());
+            while (!nodeSk.empty())
+            {
+                auto curNode = nodeSk.back();
+                nodeSk.pop_back();
+                m_insStream->addNode(curNode);
+                for (GRUINT32 i = 0; i < curNode->childNum(); ++i)
+                {
+                    nodeSk.push_back(curNode->getChild(i));
+                }
+            }
+        }
+        m_insStream->uploadInstace(pContext);
     }
 
     void View::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

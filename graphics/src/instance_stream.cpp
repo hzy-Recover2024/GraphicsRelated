@@ -20,6 +20,10 @@ namespace GRelated {
 
     void InstanceStream::addNode(DrawableNodeProxy* pNode)
     {
+        if (pNode->associatedNode()->geoDatas().empty())
+        {
+            return;
+        }
         m_nodeLayout[pNode->associatedNode()].push_back(pNode);
         m_insCount++;
     }
@@ -88,6 +92,11 @@ namespace GRelated {
         vao->vertexAttribDivisor(2, 1);
         vao->unbind();
         vbo->unbind();
+        auto ssbo = m_matSSBO.lock();
+        if (ssbo)
+        {
+            ssbo->bindIndex(0);
+        }
     }
 
 }

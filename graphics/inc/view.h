@@ -4,6 +4,8 @@
 #include "grgl_camera.h"
 #include "drawable_node_proxy.h"
 #include <set>
+#include "instance_stream.h"
+#include "grgl_object.h"
 class GLFWwindow;
 namespace GRelated {
     class DrawableNode;
@@ -15,6 +17,8 @@ namespace GRelated {
             static View ins;
             return ins;
         }
+
+        void updateCamera(GLFWGLContext*);
 
         void addSceneRoot(std::shared_ptr<DrawableNodeProxy> root)
         {
@@ -31,6 +35,15 @@ namespace GRelated {
         void dispatchNodeProxy();
 
         void uploadInstance(GLFWGLContext*);
+
+        InstanceStream& instanceStream()
+        {
+            if (m_insStream == nullptr)
+            {
+                m_insStream = std::make_unique<InstanceStream>();
+            }
+            return *m_insStream;
+        }
 
         // UI callback
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -49,8 +62,10 @@ namespace GRelated {
 
         std::vector<std::shared_ptr<DrawableNodeProxy>> m_rootList;
         std::set<DrawableNode*> m_dirtyList;
+        std::unique_ptr<InstanceStream> m_insStream;
+        std::weak_ptr<GRGLBufferObject> m_ubo;
         // octree
-        // render batch
+
     };
 }
 

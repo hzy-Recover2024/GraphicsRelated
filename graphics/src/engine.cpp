@@ -1,6 +1,5 @@
 #include "engine.h"
 #include <string>
-#include "grgl_context.h"
 #include <filesystem>
 #include <stdexcept>
 #ifdef _WIN32
@@ -9,8 +8,15 @@
 #include <cstdlib>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+
 #include "transform_node.h"
 #include "view.h"
+
+#include "grgl_context.h"
+#include "grgl_vertex_pipeline.h"
+#include "grgl_object.h"
+
 namespace GRelated {
     namespace {
         glm::vec3 getTranslate()
@@ -54,9 +60,12 @@ namespace GRelated {
     {
         initContext();
         initSecne();
-        
+
         while (!m_context->shouldClose())
         {
+            // UI callback
+            m_context->pollEvents();
+            m_context->makeCurrent();
             // some change of scene
             // .....
             //
@@ -64,16 +73,28 @@ namespace GRelated {
             //.....
             //
 
-            m_context->makeCurrent();
             // prepare vertexStream
             uploadVertexData();
             // prepare instanceStream
+            View::getInstance().uploadInstance(m_context.get());
 
-            // UI callback
-            m_context->pollEvents();
+            // 更新相机
+            View::getInstance().updateCamera(m_context.get());
 
             // start rendering
+            // pass1 绘制不透明物体，开启深度测试
+            m_canvas->prepare(*m_context);
+            
+            m_depthTest->apply();
+            m_opaque->apply();
 
+            GRGLVertexPipeline::getInstance().buildPipeline(*m_context);
+            GRGLVertexPipeline::getInstance().meshPhong().use();
+
+            m_triBatch->buildCommand(*m_context, View::getInstance().instanceStream(), *m_vertexData);
+            m_triBatch->draw();
+
+            m_context->swapBuffers();
         }
 
 
@@ -88,10 +109,34 @@ namespace GRelated {
         m_context = std::make_unique<GLFWGLContext>(GRGLContext::ContextInfo::kCore,
             4, 5, 1920, 1080);
         m_context->initGlobalState();
+        m_context->makeCurrent();
+        if (m_canvas == nullptr)
+        {
+            m_canvas = std::make_unique<Canvas>();
+        }
+        if (m_triBatch == nullptr)
+        {
+            m_triBatch = std::make_unique<TriangleBatch>();
+        }
+        if (m_depthTest == nullptr)
+        {
+            m_depthTest = std::make_unique<GRGLDepthTestStrategy>(*m_context);
+            m_depthTest->setDepthTest(true);
+            m_depthTest->setDetphTestFunc(GlobalState::kLESS);
+        }
+        if (m_opaque == nullptr)
+        {
+            m_opaque = std::make_unique<GRGLBlendStrategy>(*m_context);
+            m_opaque->setDrawBufferBlend(0, false);
+        }
     }
 
     void Engine::initSecne()
     {
+        if (m_root.size() == m_models.size())
+        {
+            return;
+        }
         for (const auto& model : m_models)
         {
             m_root.emplace_back(std::make_unique<DrawableNode>());

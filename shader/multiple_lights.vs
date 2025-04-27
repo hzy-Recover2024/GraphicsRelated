@@ -7,11 +7,14 @@ layout(colum_major) buffer;
 
 out vec3 FragPos;
 out vec3 Normal;
-out vec2 TexCoords;
+out vec3 color;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+layout(binding = 0, std140) uniform cameraInfo
+{
+    mat4 view;
+    mat4 projection;
+    mat4 vp;
+}
 
 layout(binding = 0, std430) readonly buffer matInstanced
 {
@@ -20,9 +23,8 @@ layout(binding = 0, std430) readonly buffer matInstanced
 
 void main()
 {
-    FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(model))) * aNormal;  
-    TexCoords = aTexCoords;
+    FragPos = vec3(view * matlist[int(color.w)] * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(matlist[int(color.w)]))) * aNormal;  
     
-    gl_Position = projection * view * vec4(FragPos, 1.0);
+    gl_Position = vp * vec4(FragPos, 1.0);
 }
