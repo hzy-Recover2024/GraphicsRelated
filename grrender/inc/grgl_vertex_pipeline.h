@@ -3,7 +3,6 @@
 #ifndef _GRGL_VERTEX_PIPELINE_H
 #define _GRGL_VERTEX_PIPELINE_H
 
-
 namespace GRelated {
 
 

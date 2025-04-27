@@ -274,6 +274,21 @@ namespace GRelated {
         ::glDisablei(cap, index);
     }
 
+    void GLFWGLContext::registerkey_callback(void (*func)(GLFWwindow* window, int key, int scancode, int action, int mods))
+    {
+        glfwSetKeyCallback(static_cast<GLFWwindow*>(m_window), func);
+    }
+
+    void GLFWGLContext::registermouse_callback(void (*func)(GLFWwindow* window, double xposIn, double yposIn))
+    {
+        glfwSetCursorPosCallback(static_cast<GLFWwindow*>(m_window), func);
+    }
+
+    void GLFWGLContext::registerscroll_callback(void (*func)(GLFWwindow* window, double xoffset, double yoffset))
+    {
+        glfwSetScrollCallback(static_cast<GLFWwindow*>(m_window), func);
+    }
+
     void GLFWGLContext::_init()
     {
         m_glslVersion = reinterpret_cast<const char*>(
@@ -308,9 +323,7 @@ namespace GRelated {
             assert(0);
             terminate();
         }
-        glfwSetKeyCallback(window, key_callback);
-        glfwSetCursorPosCallback(window, mouse_callback);
-        glfwSetScrollCallback(window, scroll_callback);
+
         // tell GLFW to capture our mouse
         //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -353,61 +366,6 @@ namespace GRelated {
     {
         ::glfwPollEvents();
     }
-
-    float GLFWGLContext::lastX = 0.f;
-    float GLFWGLContext::lastY = 0.f;
-    bool GLFWGLContext::firstMouse = true;
-    GRGLCamera GLFWGLContext::s_camera;
-    void GLFWGLContext::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-            return;
-        }
-
-        if (key == GLFW_KEY_W && action == GLFW_PRESS)
-            s_camera.ProcessKeyboard(FORWARD);
-        if (key == GLFW_KEY_S && action == GLFW_PRESS)
-            s_camera.ProcessKeyboard(BACKWARD);
-        if (key == GLFW_KEY_A && action == GLFW_PRESS)
-            s_camera.ProcessKeyboard(LEFT);
-        if (key == GLFW_KEY_D && action == GLFW_PRESS)
-            s_camera.ProcessKeyboard(RIGHT);
-        if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS)
-            s_camera = GRGLCamera();
-    }
-
-    // glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-    void GLFWGLContext::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-    {
-        float xpos = static_cast<float>(xposIn);
-        float ypos = static_cast<float>(yposIn);
-
-        if (firstMouse)
-        {
-            lastX = xpos;
-            lastY = ypos;
-            firstMouse = false;
-        }
-
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-        lastX = xpos;
-        lastY = ypos;
-
-        s_camera.ProcessMouseMovement(xoffset, yoffset);
-    }
-
-    // glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-    void GLFWGLContext::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-    {
-        s_camera.ProcessMouseScroll(static_cast<float>(yoffset));
-    }
-
 
 }
 

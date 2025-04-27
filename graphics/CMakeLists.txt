@@ -7,6 +7,9 @@ set(HEADERS
     inc/node_visitor.h
     inc/transform_node.h
     inc/engine.h
+    inc/view.h
+    inc/vertex_stream.h
+    inc/instance_stream.h
 )
 
 ##记录源文件
@@ -18,6 +21,9 @@ set(SRCS
     src/transform_node.cpp
     src/engine.cpp
     src/main.cpp
+    src/view.cpp
+    src/vertex_stream.cpp
+    src/instance_stream.cpp
 )
 
 ##构建虚拟文件夹

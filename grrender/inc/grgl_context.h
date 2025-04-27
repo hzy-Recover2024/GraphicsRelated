@@ -214,16 +214,14 @@ namespace GRelated {
 
         void grglDisablei(GRGL_enum cap, GRGL_uint index) override;
 
+
+        // 注册ui回调函数
+        void registerkey_callback(void (*)(GLFWwindow* window, int key, int scancode, int action, int mods));
+        void registermouse_callback(void (*)(GLFWwindow* window, double xposIn, double yposIn));
+        void registerscroll_callback(void (*)(GLFWwindow* window, double xoffset, double yoffset));
+
     private:
         void _init();
-        // ui回调函数
-        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
-        static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-        static float lastX;
-        static float lastY;;
-        static bool firstMouse;
-        static GRGLCamera s_camera;
     private:
         void* m_window;
         std::set<ObjectPtr> m_objects;
