@@ -1,6 +1,7 @@
 project(grrender)
 ##记录头文件
 set(HEADERS 
+    inc/entry.h
     inc/grgl_context.h 
     inc/grgl_type.h
     inc/grgl_object.h

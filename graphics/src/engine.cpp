@@ -102,7 +102,7 @@ namespace GRelated {
 
     void Engine::initContext()
     {
-        if (m_context == nullptr)
+        if (m_context != nullptr)
         {
             return;
         }

@@ -1,16 +1,15 @@
-/*opengl context*/
 
-#ifndef _GRGL_CONTEXT_H
-#define _GRGL_CONTEXT_H
+#ifndef _ENTRY_H
+#define _ENTRY_H
 
 namespace GRelated {
-    class GRGLContext {
+    class Entry {
     public:
-        GRGLContext() = default; // TODO
-        ~GRGLContext() = default; // TODO
-        
+        Entry();
+
+        ~Entry();
     };
 }
 
-#endif // !_GRGL_CONTEXT_H
+#endif // !_ENTRY_H
 

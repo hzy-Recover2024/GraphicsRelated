@@ -1,3 +1,4 @@
+#include "entry.h"
 #include "glad/glad.h"
 #include "GLFW//glfw3.h"
 #include <assert.h>
@@ -11,26 +12,21 @@ namespace GRelated {
             assert(0);
         }
 
-        class Entry {
-        public:
-            Entry()
-            {
-                glfwSetErrorCallback(error_callback);
-                if (!glfwInit())
-                {
-                    // Initialization failed
-                    assert(0);
-                }
-            }
-
-            ~Entry()
-            {
-                glfwTerminate();
-            }
-        };
-
-        const Entry init;
     }
-
+    Entry::Entry()
+    {
+        std::cout << "error";
+        glfwSetErrorCallback(error_callback);
+        if (!glfwInit())
+        {
+            // Initialization failed
+            assert(0);
+        }
+    }
+    Entry::~Entry()
+    {
+        glfwTerminate();
+    }
 }
+
 
