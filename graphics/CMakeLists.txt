@@ -76,10 +76,3 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     "${RESOURCE_DIR}"
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>/resource"
 )
-
-# 构建时复制资源文件到输出目录
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${SHADER_DIR}"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/shader"
-)

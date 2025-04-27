@@ -73,6 +73,7 @@ namespace GRelated {
             m_context->pollEvents();
 
             // start rendering
+
         }
 
 
