@@ -15,6 +15,12 @@ namespace GRelated {
         void uploadInstace(GLFWGLContext* pContext);
         void setupVertexFormat(
             std::shared_ptr<GRGLVertexArrayObject> vao);
+
+        const std::map<DrawableNode*, std::vector<DrawableNodeProxy*>>&
+            instanceLayout() const
+        {
+            return m_nodeLayout;
+        }
     private:
         bool m_needUpdate = false;
         std::map<DrawableNode*, std::vector<DrawableNodeProxy*>> m_nodeLayout;

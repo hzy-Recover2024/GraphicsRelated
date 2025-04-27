@@ -4,6 +4,7 @@
 #define _GRGL_VERTEX_RENDERING_H
 
 #include "grgl_object.h"
+#include <vector>
 #include <memory>
 namespace GRelated {
     struct alignas(sizeof(GRGL_uint)) DrawArraysIndirectCommand
@@ -22,19 +23,20 @@ namespace GRelated {
         GRGL_uint  baseVertex;
         GRGL_uint  baseInstance;
     };
-
+    class GRGLContext;
     class GRGLVertexRendering {
     public:
-        GRGLVertexRendering() {}
+        explicit GRGLVertexRendering(GRGLContext& ctx) : m_context(ctx) {}
         virtual ~GRGLVertexRendering() {}
 
     protected:
-        std::weak_ptr<GRGLBufferObjectPersistMapped> m_DIBO;
+        GRGLContext& m_context;
+        std::weak_ptr<GRGLBufferObject> m_DIBO;
     };
 
     class GRGLPointRendering : public GRGLVertexRendering {
     public:
-        GRGLPointRendering() {}
+        explicit GRGLPointRendering(GRGLContext& ctx);
         ~GRGLPointRendering() override {}
 
         void drawPoint(){}
@@ -43,7 +45,7 @@ namespace GRelated {
 
     class GRGLLinesRendering : public GRGLVertexRendering {
     public:
-        GRGLLinesRendering() {}
+        explicit GRGLLinesRendering(GRGLContext& ctx);
         ~GRGLLinesRendering() override {}
 
         void drawLines() {}
@@ -55,13 +57,23 @@ namespace GRelated {
 
     class GRGLTriangleRendering : public GRGLVertexRendering {
     public:
-        GRGLTriangleRendering() {}
+        explicit GRGLTriangleRendering(GRGLContext& ctx);
         ~GRGLTriangleRendering() override {}
 
-        void drawTriangle() {}
+        void uploadCommand(std::vector<DrawElementsIndirectCommand>& cmdList);
+        DrawElementsIndirectCommand* dataPointer();
+        void drawTriangle();
         void drawTriangleStrip() {}
 
         void setPrimitiveRestart(GRGL_uint index);
+
+        void setCmdNum(GRGL_uint num)
+        {
+            m_cmdNum = num;
+        }
+
+    private:
+        GRGL_uint m_cmdNum = 0;
     };
 }
 

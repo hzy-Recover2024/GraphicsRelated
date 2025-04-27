@@ -204,6 +204,8 @@ namespace GRelated {
 
         void disableVertexAttribArray(GRGL_uint index);
 
+        void vertexAttribDivisor(GRGL_uint index, GRGL_uint divisor);
+
     };
 
     enum QueryType

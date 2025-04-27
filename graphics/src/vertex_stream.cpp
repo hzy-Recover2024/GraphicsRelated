@@ -12,7 +12,7 @@ namespace GRelated {
         };
     }
 
-    void VertexStream::addNode(DrawableNode* pNode)
+    void VertexStream::addNode(const DrawableNode* pNode)
     {
         m_nodelist.push_back({ pNode });
         m_vertexCountProbably += pNode->vertexCount();
@@ -84,7 +84,7 @@ namespace GRelated {
         newEbo->unbind();
     }
 
-    GRUINT32 VertexStream::getVertexOffset(DrawableNode* pNode)
+    GRUINT32 VertexStream::getVertexOffset(const DrawableNode* pNode)
     {
         auto itr = m_loactionMap.find(pNode);
         if (itr == m_loactionMap.end())
@@ -94,7 +94,7 @@ namespace GRelated {
         return m_nodelist[itr->second].vertexOffset;
     }
 
-    GRUINT32 VertexStream::getIndexOffset(DrawableNode* pNode)
+    GRUINT32 VertexStream::getIndexOffset(const DrawableNode* pNode)
     {
         auto itr = m_loactionMap.find(pNode);
         if (itr == m_loactionMap.end())

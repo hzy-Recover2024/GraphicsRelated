@@ -284,6 +284,11 @@ namespace GRelated {
         ::glDisableVertexAttribArray(index);
     }
 
+    void GRGLVertexArrayObject::vertexAttribDivisor(GRGL_uint index, GRGL_uint divisor)
+    {
+        ::glVertexAttribDivisor(index, divisor);
+    }
+
     void GRGLVertexArrayObject::vertexAttriIPointer(GRGL_uint index, GRGL_int size, TypeEnum type,
         GRGL_sizei stride, GRGL_sizeiptr offset)
     {

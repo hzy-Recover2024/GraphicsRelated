@@ -11,22 +11,22 @@ namespace GRelated {
     class GRGLVertexArrayObject;
     class VertexStream {
     public:
-        void addNode(DrawableNode* pNode);
+        void addNode(const DrawableNode* pNode);
         void uploadVertex(GLFWGLContext* pContext);
-        GRUINT32 getVertexOffset(DrawableNode* pNode);
-        GRUINT32 getIndexOffset(DrawableNode* pNode);
+        GRUINT32 getVertexOffset(const DrawableNode* pNode);
+        GRUINT32 getIndexOffset(const DrawableNode* pNode);
 
         void setupVertexFormat(std::shared_ptr<GRGLVertexArrayObject> vao);
     private:
         struct NodeVertexOffset
         {
-            DrawableNode* dn = nullptr;
+            const DrawableNode* dn = nullptr;
             GRUINT32 vertexOffset = 0;
             GRUINT32 indexOffset = 0;
         };
         bool m_needUpade = false;
         std::vector<NodeVertexOffset> m_nodelist;
-        std::map<DrawableNode*, int> m_loactionMap;
+        std::map<const DrawableNode*, int> m_loactionMap;
         GRUINT32 m_vertexCountProbably = 0;
         GRUINT32 m_indexCountProbably = 0;
         std::weak_ptr<GRGLBufferObject> m_vbo;

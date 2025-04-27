@@ -10,6 +10,7 @@ set(HEADERS
     inc/view.h
     inc/vertex_stream.h
     inc/instance_stream.h
+    inc/render_batch.h
 )
 
 ##记录源文件
@@ -24,6 +25,7 @@ set(SRCS
     src/view.cpp
     src/vertex_stream.cpp
     src/instance_stream.cpp
+    src/render_batch.cpp
 )
 
 ##构建虚拟文件夹
