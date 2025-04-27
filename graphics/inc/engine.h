@@ -5,6 +5,7 @@
 #include "drawable_node.h"
 #include "grgl_model.h"
 #include "grgl_context.h"
+#include "vertex_stream.h"
 namespace GRelated {
     class Engine {
     public:
@@ -12,16 +13,19 @@ namespace GRelated {
         static Engine& getInstance()
         {
             static Engine ins;
+            ::srand(1);
             return ins;
         }
         void draw();
         void initContext();
         void initSecne();
+        void uploadVertexData();
     private:
-        Engine() = default;
+        Engine();
         
         std::vector<GRGLModel> m_models;
-        std::unique_ptr<DrawableNode> m_root;
+        std::vector<std::unique_ptr<DrawableNode>> m_root;
+        std::unique_ptr<VertexStream> m_vertexData;
         std::unique_ptr<GLFWGLContext> m_context;
     };
 }

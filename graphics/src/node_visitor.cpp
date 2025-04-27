@@ -2,6 +2,7 @@
 #include "drawable_node.h"
 #include "transform_node.h"
 #include "drawable_node_proxy.h"
+#include "view.h"
 namespace GRelated {
 
     void NodeVisitor::pushNode(NodeBase* pNode)
@@ -26,8 +27,13 @@ namespace GRelated {
                 if (!m_nodeProxyPath.empty())
                 {
                     m_nodeProxyPath.back()->addChild(newNodeProxy);
+                    newNodeProxy->addParent(m_nodeProxyPath.back());
                 }
                 m_nodeProxyPath.push_back(newNodeProxy.get());
+                if (newNodeProxy->parent() == nullptr)
+                {
+                    View::getInstance().addSceneRoot(newNodeProxy);
+                }
                 // traverse child
                 node.traverse(*this);
                 m_nodeProxyPath.pop_back();
@@ -60,10 +66,10 @@ namespace GRelated {
         if (m_type == kBuildSceneTree)
         {
             // get mat
-            //m_matAcc.push_back(m_matAcc.back() * node.mat());
+            m_matAcc.push_back(node.mat() * m_matAcc.back());
             // traverse child
             node.traverse(*this);
-            //m_matAcc.pop_back();
+            m_matAcc.pop_back();
         }
         else if (m_type == kUpdate)
         {
