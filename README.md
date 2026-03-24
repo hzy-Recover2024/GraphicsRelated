@@ -2,6 +2,8 @@
 ## cmake as ..../GraphicsRelated/:
 cmake -B build/x64 -S ./ -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
 
+延迟渲染器在另一个仓 https://github.com/hzy-Recover2024/Deferred_renderer/tree/develop
+
 # 场景图
 可绘制节点drawableNode携带所有geometry信息，表现为多个mesh的容器。
 drawableNode定义为多父多子，可提供的连接节点为transformNode(单父单子)。
